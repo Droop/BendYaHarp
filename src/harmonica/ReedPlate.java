@@ -1,8 +1,12 @@
-package src.core;
+package src.harmonica;
 
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 
-import org.jdom.Element;
+import src.harmonica.Note.NoteName;
+
+
 
 
 public class ReedPlate {
@@ -13,13 +17,14 @@ public class ReedPlate {
 	//
 	//
 	//
-
+	
 	public ReedPlate(Note[] notes, Boolean[] valves) {
 		super();
 		this.notes = notes;
 		this.valves = valves;
 	}
 
+	
 	public ReedPlate(Note[] notes) {
 		super();
 		this.notes = notes;
@@ -29,11 +34,25 @@ public class ReedPlate {
 		}
 	}
 
-	public ReedPlate(Collection<Note> notes, Boolean[] valves) {
+	public ReedPlate(String[] plate) throws UnexistantNoteException {
+		notes = new Note[plate.length];
+		valves = new Boolean[plate.length];
+		for (int i = 0; i < plate.length; i++){
+			if (plate[i].endsWith("v")){
+				valves[i]=true;
+				plate[i].replace("v", "");
+			} else
+				valves[i]=false;
+			NoteName newNote=	NoteName.fromString(plate[i]);
+			notes[i]=(i==0)?new Note(newNote,3):(notes[i-1].getNext(newNote));
+		}
+	}
+	
+	public ReedPlate(List<Note> notes, Boolean[] valves) {
 		this((Note[]) notes.toArray(), valves);
 	}
 
-	public ReedPlate(Collection<Note> notes) {
+	public ReedPlate(List<Note> notes) {
 		this((Note[]) notes.toArray());
 	}
 
@@ -41,11 +60,12 @@ public class ReedPlate {
 	//
 	//
 
+
 	public int getNumberOfReeds(){
 		return notes.length;
 	}
 
-	public Note[] getPlate(){
+	public AbstractNote[] getPlate(){
 		return notes;
 	}
 
@@ -62,14 +82,6 @@ public class ReedPlate {
 	 */
 
 	public String toString(){
-		throw new RuntimeException("todo");
-	}
-
-	public Element toXML(){
-		throw new RuntimeException("todo");
-	}
-
-	public static ReedPlate fromXML(Element e){
-		throw new RuntimeException("todo");
+		return Arrays.asList(notes).toString();
 	}
 }

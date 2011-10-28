@@ -1,12 +1,13 @@
 package src.api;
-import static src.core.NoteChrom.*;
+import static src.harmonica.NoteChrom.*;
 
 import java.util.Arrays;
 import java.util.List;
 
-import src.core.Harmonica;
-import src.core.Note;
-import src.core.NoteChrom;
+import src.harmonica.AbstractNote;
+import src.harmonica.Harmonica;
+import src.harmonica.Note;
+import src.harmonica.NoteChrom;
 
 
 public class Test {
@@ -15,7 +16,7 @@ public class Test {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		Note n = new Note(RE, 3);
+		AbstractNote n = new Note(RE, 3);
 //		System.out.println(n.transpose(0));
 //		System.out.println(n.transpose(2));
 //		System.out.println(n.transpose(4));

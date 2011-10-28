@@ -1,25 +1,25 @@
 package src.api;
 
-import static src.core.NoteChrom.DO;
-import static src.core.NoteChrom.DOd;
-import static src.core.NoteChrom.FA;
-import static src.core.NoteChrom.FAd;
-import static src.core.NoteChrom.LA;
-import static src.core.NoteChrom.LAd;
-import static src.core.NoteChrom.MI;
-import static src.core.NoteChrom.RE;
-import static src.core.NoteChrom.REd;
-import static src.core.NoteChrom.SI;
-import static src.core.NoteChrom.SOL;
-import static src.core.NoteChrom.SOLd;
+import static src.harmonica.NoteChrom.DO;
+import static src.harmonica.NoteChrom.DOd;
+import static src.harmonica.NoteChrom.FA;
+import static src.harmonica.NoteChrom.FAd;
+import static src.harmonica.NoteChrom.LA;
+import static src.harmonica.NoteChrom.LAd;
+import static src.harmonica.NoteChrom.MI;
+import static src.harmonica.NoteChrom.RE;
+import static src.harmonica.NoteChrom.REd;
+import static src.harmonica.NoteChrom.SI;
+import static src.harmonica.NoteChrom.SOL;
+import static src.harmonica.NoteChrom.SOLd;
 
 import java.util.Arrays;
 import java.util.List;
 
 
-import src.core.Harmonica;
-import src.core.HarpBuilder;
-import src.core.NoteChrom;
+import src.builder.HarmonicaBuilder;
+import src.harmonica.Harmonica;
+import src.harmonica.NoteChrom;
 public class Test2 {
 
 
@@ -28,7 +28,7 @@ public class Test2 {
 	 */
 	public static void main(String[] args) {
 
-		HarpBuilder configurator= new HarpBuilder();
+		HarmonicaBuilder configurator= new HarmonicaBuilder();
 		configurator.addHole(RE, 3, MI, 4);
 		configurator.addHole(FAd, 3, SOL, 4);
 		configurator.addHole(LA, 3, SI, 4);

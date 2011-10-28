@@ -1,4 +1,4 @@
-package src.databases;
+package src.score;
 
 /**
  *  Manipulate (read, add, remove) the xml containing the different used scores 

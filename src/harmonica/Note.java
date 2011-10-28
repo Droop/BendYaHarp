@@ -1,18 +1,22 @@
-package src.core;
+package src.harmonica;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 
 import src.StaticConfiguration;
+import src.harmonica.Note.NoteName;
 
 
-public class Note implements Comparable<Note>{
+public class Note implements AbstractNote, Comparable<AbstractNote>, Comparator<AbstractNote>{
 
 	//
 	// Fields
 	//
 
-	NoteName note;
-	public int hauteur;
+	private final NoteName note;
+	private final int hauteur;
 
 	//
 	// Constructor
@@ -24,19 +28,31 @@ public class Note implements Comparable<Note>{
 		this.hauteur = hauteur;
 	}
 
+	public Note(AbstractNote n) {
+		super();
+		this.note = n.getNoteName();
+		this.hauteur = n.getHauteur();
+	}
 	//
 	// Accessor
 	//
 
+	@Override
 	public NoteName getNoteName(){
 		return note;
+	}
+
+	@Override
+	public Integer getHauteur() {
+		return hauteur;
 	}
 
 	/*
 	 * 
 	 */
 
-	public static int getFrequency(Note n, TuningTemperament t){
+
+	public static int getFrequency(AbstractNote n, TuningTemperament t){
 		throw new RuntimeException();
 	}
 	//
@@ -65,9 +81,13 @@ public class Note implements Comparable<Note>{
 		}
 		return new Note(NoteName.values()[noteAbs], hauteur);
 	}
-	
-	public static Collection<Note> transpose(Collection<Note> notes, int demiTon){
-		
+
+	public static Collection<AbstractNote> transpose(Collection<AbstractNote> notes, int demiTon) throws UnexistantNoteException{
+		Collection<AbstractNote> result = new ArrayList<AbstractNote>();
+		for (AbstractNote n : notes){
+			result.add(n.transpose(demiTon));
+		}
+		return result;
 	}
 
 	public int getEcart(Note that){
@@ -85,21 +105,35 @@ public class Note implements Comparable<Note>{
 		if (this.note.ordinal()>that.ordinal())
 			return new Note(that, this.hauteur);
 		else
-			return new Note(that, this.hauteur+1);
+			return new Note(that, this.hauteur-1);
 	}
-	//
-	// Import/Export
-	//
+
+	public int compareTo(AbstractNote that){
+		if (this.hauteur-that.getHauteur()!=0){
+			return this.hauteur-that.getHauteur();
+		} else 
+			return this.note.ordinal()-that.getNoteName().ordinal();
+	}
+
+	@Override
+	public int compare(AbstractNote o1, AbstractNote o2) {
+		return new Note(o1).compareTo(o2);
+	}
+
+	public static AbstractNote getLower(Collection<AbstractNote> notesToPlay) {
+		return Collections.min(notesToPlay, new Note(NoteName.DO,3));
+	}
+
+	public static AbstractNote getUpper(Collection<AbstractNote> notesToPlay) {
+		return Collections.max(notesToPlay, new Note(NoteName.DO,3));
+	}
+
+	/*
+	 * 
+	 */
 
 	public String toString(){
 		return note.toString()+hauteur;
-	}
-
-	public int compareTo(Note that){
-		if (this.hauteur-that.hauteur!=0){
-			return this.hauteur-that.hauteur;
-		} else 
-			return this.note.ordinal()-that.note.ordinal();
 	}
 
 	//
@@ -107,9 +141,9 @@ public class Note implements Comparable<Note>{
 	//
 
 	public enum NoteName {
-		DO("  DO", " c"), DOd(" DO#", "c#"), RE("  RE", "d"), REd(" RE#", "d#"), 
-		MI("  MI", "e"), FA("  FA", "f"), FAd(" FA#", "f#"), SOL(" SOL", "g"), SOLd("SOL#", "g#"), 
-		LA("  LA", "a"), LAd(" LA#", "a#"), SI("  SI", "b");
+		DO("  DO", "C"), DOd(" DO#", "C#"), RE("  RE", "D"), REd(" RE#", "D#"), 
+		MI("  MI", "E"), FA("  FA", "F"), FAd(" FA#", "F#"), SOL(" SOL", "G"), SOLd("SOL#", "G#"), 
+		LA("  LA", "A"), LAd(" LA#", "A#"), SI("  SI", "B");
 
 		String french;
 		String international;
@@ -127,6 +161,18 @@ public class Note implements Comparable<Note>{
 			} else
 				throw new RuntimeException("Wrong notation type in static configuration");
 
+		}
+
+		public NoteName transpose(int demitons) {
+			return new Note(this,3).transpose(demitons).getNoteName();
+		}
+
+		public static NoteName fromString(String s) throws UnexistantNoteException{
+			for (NoteName n : NoteName.values()){
+				if (s.toUpperCase().equals(n.french) || s.toUpperCase().equals(n.international))
+					return n;
+			}
+			throw new UnexistantNoteException(s);
 		}
 	}
 
@@ -158,4 +204,7 @@ public class Note implements Comparable<Note>{
 		System.out.println("transpose si5 to do4 (-23) :  "+si5.transpose(-23));
 		System.out.println("And back to sol!! :  HEEEINNN? "+sol5.getPrevious(NoteName.FA).transpose(sol5.getEcart(sol5.getPrevious(NoteName.FA))));
 	}
+
+
+
 }

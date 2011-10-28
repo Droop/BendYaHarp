@@ -1,4 +1,4 @@
-package src.core;
+package src.harmonica;
 
 public enum AirFlow{
 	blow("+"), 
