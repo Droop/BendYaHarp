@@ -5,7 +5,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 
-import src.StaticConfiguration;
+import src.PlayerPreferences;
 import src.harmonica.Note.NoteName;
 
 
@@ -154,9 +154,9 @@ public class Note implements AbstractNote, Comparable<AbstractNote>, Comparator<
 		}
 
 		public String toString(){
-			if (StaticConfiguration._notationType.equals(StaticConfiguration.key4notationType_french)){
+			if (PlayerPreferences._notationType.equals(PlayerPreferences.key4notationType_french)){
 				return this.french;
-			} else if (StaticConfiguration._notationType.equals(StaticConfiguration.key4notationType_international)){
+			} else if (PlayerPreferences._notationType.equals(PlayerPreferences.key4notationType_international)){
 				return this.international;
 			} else
 				throw new RuntimeException("Wrong notation type in static configuration");

@@ -6,11 +6,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import src.PlayerPreferences;
 import src.harmonica.AbstractNote;
 import src.harmonica.Harmonica;
 import src.harmonica.HarmonicaDataBase;
 import src.harmonica.Note;
-import src.harmonica.PlayerPreferences;
 import src.harmonica.Harmonica.HarmonicaNote;
 
 public abstract class AbstractScore {

@@ -13,6 +13,7 @@ import static src.harmonica.AirFlow.*;
 import static src.harmonica.BendType.*;
 
 
+import src.PlayerPreferences;
 import src.builder.MalformedHarmonicaException;
 import src.harmonica.Note.NoteName;
 import src.tools.HashedHashList;

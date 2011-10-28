@@ -1,10 +1,12 @@
-package src.harmonica;
+package src;
 
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
+import src.harmonica.Harmonica;
+import src.harmonica.Note;
 import src.harmonica.Harmonica.HarmonicaNote;
 
 public class PlayerPreferences implements Comparator<Collection<? extends HarmonicaNote<?>>>{
@@ -12,6 +14,12 @@ public class PlayerPreferences implements Comparator<Collection<? extends Harmon
 	//
 	// Fields
 	//
+
+
+	public static final String key4notationType_french="french";
+	public static final String key4notationType_international="international";
+	public static String _notationType=key4notationType_french;
+	
 	
 	int iPrefertransposingScore;
 	//1 : true; -1 false; 0 don't transpose
