@@ -6,7 +6,7 @@ import java.util.Collections;
 import java.util.Comparator;
 
 import src.PlayerPreferences;
-import src.harmonica.Note.NoteName;
+import static src.harmonica.Note.NoteName.*;
 
 
 public class Note implements AbstractNote, Comparable<AbstractNote>, Comparator<AbstractNote>{
@@ -17,6 +17,8 @@ public class Note implements AbstractNote, Comparable<AbstractNote>, Comparator<
 
 	private final NoteName note;
 	private final int hauteur;
+
+	public static final Note do3 = new Note(DO, 3);
 
 	//
 	// Constructor
@@ -136,23 +138,38 @@ public class Note implements AbstractNote, Comparable<AbstractNote>, Comparator<
 		return note.toString()+hauteur;
 	}
 
+	public boolean equals(Object o){
+		if (o instanceof Note){
+			Note that = (Note) o;
+			return this.note.equals(that.note) && this.hauteur==that.hauteur;
+		} else
+			return false;
+	}
+
 	//
 	// Subclass
 	//
 
 	public enum NoteName {
-		DO("  DO", "C"), DOd(" DO#", "C#"), RE("  RE", "D"), REd(" RE#", "D#"), 
-		MI("  MI", "E"), FA("  FA", "F"), FAd(" FA#", "F#"), SOL(" SOL", "G"), SOLd("SOL#", "G#"), 
-		LA("  LA", "A"), LAd(" LA#", "A#"), SI("  SI", "B");
+		DO("DO", "C"), DOd("DO#", "C#"), RE("RE", "D", true), REd("RE#", "D#"), 
+		MI("MI", "E", true), FA("FA", "F"), FAd("FA#", "F#"), SOL("SOL", "G", true), SOLd("SOL#", "G#"), 
+		LA("LA", "A", true), LAd("LA#", "A#"), SI("SI", "B", true);
 
 		String french;
 		String international;
+		boolean hasBemol;
 
 		private NoteName(String french, String international) {
 			this.french=french;
 			this.international = international;
+			this.hasBemol=false;
 		}
 
+		private NoteName(String french, String international, boolean isBemol) {
+			this.french=french;
+			this.international = international;
+			this.hasBemol=isBemol;
+		}
 		public String toString(){
 			if (PlayerPreferences._notationType.equals(PlayerPreferences.key4notationType_french)){
 				return this.french;
@@ -171,6 +188,10 @@ public class Note implements AbstractNote, Comparable<AbstractNote>, Comparator<
 			for (NoteName n : NoteName.values()){
 				if (s.toUpperCase().equals(n.french) || s.toUpperCase().equals(n.international))
 					return n;
+				else if(n.hasBemol &&(
+						s.toUpperCase().equals(n.french+"B")
+						|| s.toUpperCase().equals(n.international+"B")))
+					return NoteName.values()[n.ordinal()-1];
 			}
 			throw new UnexistantNoteException(s);
 		}
@@ -185,12 +206,16 @@ public class Note implements AbstractNote, Comparable<AbstractNote>, Comparator<
 	//
 
 	public static void main(String[] args){
-		Note do3 = new Note(NoteName.DO, 3);
-		Note do6 = new Note(NoteName.DO, 6);
-		Note re5 = new Note(NoteName.RE,5);
-		Note sol5 = new Note(NoteName.SOL,5);
-		Note si5 = new Note(NoteName.SI,5);
+		Note fa2 = new Note(FA, 2);
+		Note do3 = new Note(DO, 3);
+		Note do6 = new Note(DO, 6);
+		Note sol5 = new Note(SOL,5);
+		Note re5 = new Note(RE,5);
+		Note si5 = new Note(SI,5);
+		Note mi6 = new Note(MI, 6);
 
+		System.out.println("Ecart "+si5.getEcart(mi6));
+		System.out.println("Ecart "+fa2.getEcart(do3));
 		System.out.println(do3+" is upper "+re5+" ? "+do3.compareTo(re5));
 		System.out.println(re5+" is upper "+do3+" ? "+re5.compareTo(do3));
 		System.out.println(do6+" is upper "+do3+" ? "+do6.compareTo(do3));

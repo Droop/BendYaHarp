@@ -46,6 +46,7 @@ public class ReedPlate {
 			NoteName newNote=	NoteName.fromString(plate[i]);
 			notes[i]=(i==0)?new Note(newNote,3):(notes[i-1].getNext(newNote));
 		}
+//		System.out.println(Arrays.asList(plate)+" -> "+Arrays.asList(notes));
 	}
 	
 	public ReedPlate(List<Note> notes, Boolean[] valves) {

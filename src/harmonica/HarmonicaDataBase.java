@@ -15,10 +15,15 @@ public class HarmonicaDataBase {
 			new HashMap<String, Harmonica>();
 
 	public HarmonicaDataBase(File f){
-		this.parse(f);
+		if (f.isDirectory()){
+			for (File f2 : f.listFiles())
+				this.parse(f2);
+		} else
+			this.parse(f);
 	}
 
 	private void parse(File f) {
+		System.out.println("parsing "+f);
 		try{
 
 			//récupération du fichier dans un string
@@ -31,20 +36,20 @@ public class HarmonicaDataBase {
 				chaine+=ligne+"\n";
 			}
 			br.close(); 
-
-			System.out.println("chaine : "+chaine+"\n###############################");
+			//(?:[^B][^L][^O][^W])(?:[^D][^R][^A][^W])
+			//			System.out.println("chaine : "+chaine+"\n###############################");
 			//parsage 
 			Pattern harmonica = Pattern.compile(
-					"(?:\n*)NAME(.*)\n(?:(?:[^B][^L][^O][^W].*\n*)*)BLOW(.*)\n(?:(?:[^D][^R][^A][^W].*\n*)*)DRAW(.*)\n", 
+					"NAME(.*)\n(?:.*\n*)*?BLOW(.*)\n(?:.*\n*)*?DRAW(.*)\n", 
 					Pattern.CASE_INSENSITIVE);
 			Matcher m = harmonica.matcher(chaine);
-			
+
 			Pattern parenthesis = Pattern.compile("(([^)]*))");
 
-//			while(m.find())
-//				for (int i = 0; i <= m.groupCount(); i++){
-//					System.out.println("yo : "+i+"\n"+m.group(i));
-//				}
+			//			while(m.find())
+			//				for (int i = 0; i <= m.groupCount(); i++){
+			//					System.out.println("yo : "+i+"\n"+m.group(i));
+			//				}
 
 			//			System.out.println(m.group());
 			//			System.out.println(m.groupCount());
@@ -57,12 +62,20 @@ public class HarmonicaDataBase {
 			//			}
 
 			while (m.find()){
-				
 				String name = m.group(1);
 				String[] blow = m.group(2).replaceFirst("[ \t\n\f\r]++", "").split("[ \t\n\f\r]++");
 				String[] draw = m.group(3).replaceFirst("[ \t\n\f\r]++", "").split("[ \t\n\f\r]++");
-				harmonicas.put(name, new Harmonica(name, new ReedPlate(blow), new ReedPlate(draw), new Note(DO,3)));
-				System.out.println("Added : "+harmonicas.get(name));
+
+				try{
+					Harmonica old = harmonicas.put(name, new Harmonica(name, new ReedPlate(blow), new ReedPlate(draw), new Note(DO,3)));	
+					if (old!=null)
+						System.err.println("Already known harmonica for "+m.group(0)+" : "+old);
+					else
+						System.out.println("Added : "+harmonicas.get(name));
+				}catch (Exception e){
+					System.out.println("on file "+f+" : "+m.group(1));
+					e.printStackTrace();
+				}
 			}
 
 
@@ -85,7 +98,7 @@ public class HarmonicaDataBase {
 	}
 
 	public static void main(String[] args){
-		HarmonicaDataBase hdb = new HarmonicaDataBase(new File(getDir()+"/db/harmonicas/TNGS001.TXT"));
+		HarmonicaDataBase hdb = new HarmonicaDataBase(new File(getDir()+"/db/harmonicas/"));
 
 	}
 

@@ -6,7 +6,7 @@ import src.harmonica.Note.NoteName;
 public class UnexistantNoteException extends HarpException implements AbstractNote {
 
 	public UnexistantNoteException(String s) {
-		super(s);
+		super("\'"+s+"\'");
 	}
 
 	public UnexistantNoteException() {

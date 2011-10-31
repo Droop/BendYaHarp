@@ -50,7 +50,7 @@ public class Harmonica{
 			holes[i].drawValve=drawPlate.isValved(i);
 		}
 	}
-	
+
 	//
 	// Accessors
 	//
@@ -70,11 +70,11 @@ public class Harmonica{
 	public Boolean isValved(int holeNb, AirFlow air) {
 		return  air.equals(blow)?holes[holeNb].blowValve:holes[holeNb].drawValve;
 	}
-	
+
 	/*
 	 * 
 	 */
-	
+
 	public void setTonalite(Note tonalite) {
 		this.tonalite = tonalite;
 	}
@@ -82,11 +82,11 @@ public class Harmonica{
 	public void transpose(int demitons){
 		tonalite.transpose(demitons);
 	}	
-	
+
 	public Note getTonalite() {
 		return tonalite;
 	}
-	
+
 	/*
 	 * 
 	 */
@@ -94,7 +94,7 @@ public class Harmonica{
 	public int getNumberOfHoles(){
 		return holes.length;
 	}
-	
+
 	protected Hole getHole(int i){
 		return holes[i];
 	}
@@ -208,7 +208,7 @@ public class Harmonica{
 		Collections.sort(result);
 		return result;
 	}
-	
+
 	public ReedPlate getPlate(AirFlow air){
 		Note[] notes = new Note[getNumberOfHoles()];
 		Boolean[] valves = new Boolean[getNumberOfHoles()];
@@ -218,7 +218,7 @@ public class Harmonica{
 		}
 		return new ReedPlate(notes, valves);		
 	}
-	
+
 	//
 	// Methods
 	//
@@ -293,11 +293,11 @@ public class Harmonica{
 		};		
 		return Collections.max(allPossible, myPrefs);
 	}
-	
+
 	public static int getScoreTransposition(Map<AbstractNote,HarmonicaNote<Note>> mapping){
 		//TODO
 	}
-	
+
 
 
 	//
@@ -322,6 +322,29 @@ public class Harmonica{
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+
+	public boolean equals(Object o){
+		if (o instanceof Harmonica){
+			Harmonica that = (Harmonica) o;
+
+			if (that.getNumberOfHoles()!=this.getNumberOfHoles())
+				return false;
+			else {
+				that.transpose(1-Note.do3.getEcart(that.getNaturalNote(0, blow))+3);
+				assert(that.getNaturalNote(0, blow).equals(Note.do3));
+				this.transpose(Note.do3.getEcart(this.getNaturalNote(0, blow))+3);
+				assert(this.getNaturalNote(0, blow).equals(Note.do3));
+				for (int i = 0; i < this.getNumberOfHoles(); i++)
+					if (!this.getNaturalNote(i, blow).equals(that.getNaturalNote(i, blow))
+							|| !this.getNaturalNote(i, blow).equals(that.getNaturalNote(i, draw)))
+						return false;				
+			}
+			return true;
+		}else
+			return false;
+	}
+
 	//
 	// Subclasses
 	//
@@ -383,7 +406,7 @@ public class Harmonica{
 			return result;
 
 		}
-		
+
 		public AirFlow getAirDirection() {
 			return air;
 		}
@@ -425,15 +448,15 @@ public class Harmonica{
 		//
 
 		public Hole(Note blow, Note draw) {
-			this.blowRelative = blow.getEcart(Harmonica.this.tonalite);
-			this.drawRelative = draw.getEcart(Harmonica.this.tonalite);
+			this.blowRelative = Harmonica.this.tonalite.getEcart(blow);
+			this.drawRelative = Harmonica.this.tonalite.getEcart(draw);
 		}
 
 		public Hole(int blow, int draw) {
 			this.blowRelative = blow;
 			this.drawRelative = draw;
 		}
-		
+
 		//
 		// Accessors
 		//
