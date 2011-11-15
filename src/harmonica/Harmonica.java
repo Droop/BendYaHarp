@@ -323,6 +323,9 @@ public class Harmonica{
 		return null;
 	}
 
+	public int hashCode(){
+		return 0;
+	}
 
 	public boolean equals(Object o){
 		if (o instanceof Harmonica){
@@ -331,9 +334,11 @@ public class Harmonica{
 			if (that.getNumberOfHoles()!=this.getNumberOfHoles())
 				return false;
 			else {
-				that.transpose(1-Note.do3.getEcart(that.getNaturalNote(0, blow))+3);
+				System.out.println(this.tuningName+" 1 "+this.tonalite+" "+this.getNaturalNote(0, blow)+" "+Note.do3.getEcartToReach(this.getNaturalNote(0, blow)));
+				that.transpose(Note.do3.getEcartToReach(that.getNaturalNote(0, blow)));
 				assert(that.getNaturalNote(0, blow).equals(Note.do3));
-				this.transpose(Note.do3.getEcart(this.getNaturalNote(0, blow))+3);
+				this.transpose(Note.do3.getEcartToReach(this.getNaturalNote(0, blow)));
+				System.out.println(this.tuningName+" 2 "+this.tonalite+" "+this.getNaturalNote(0, blow)+" "+Note.do3.getEcartToReach(this.getNaturalNote(0, blow)));
 				assert(this.getNaturalNote(0, blow).equals(Note.do3));
 				for (int i = 0; i < this.getNumberOfHoles(); i++)
 					if (!this.getNaturalNote(i, blow).equals(that.getNaturalNote(i, blow))
@@ -448,8 +453,8 @@ public class Harmonica{
 		//
 
 		public Hole(Note blow, Note draw) {
-			this.blowRelative = Harmonica.this.tonalite.getEcart(blow);
-			this.drawRelative = Harmonica.this.tonalite.getEcart(draw);
+			this.blowRelative = Harmonica.this.tonalite.getEcartToReach(blow);
+			this.drawRelative = Harmonica.this.tonalite.getEcartToReach(draw);
 		}
 
 		public Hole(int blow, int draw) {

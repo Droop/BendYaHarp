@@ -1,6 +1,7 @@
 package src.harmonica;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -92,7 +93,7 @@ public class Note implements AbstractNote, Comparable<AbstractNote>, Comparator<
 		return result;
 	}
 
-	public int getEcart(Note that){
+	public int getEcartToReach(Note that){
 		return (that.note.ordinal() - this.note.ordinal()) + 12 * (that.hauteur - this.hauteur); 
 	}
 
@@ -201,33 +202,157 @@ public class Note implements AbstractNote, Comparable<AbstractNote>, Comparator<
 		EqualTemperament, JustIntonation, Compromised;
 	}
 
+
+	public static void myTest(){
+		Note fa = new Note(FA, 2);
+		Note do2 = new Note(DO, 2);
+		Note sol = new Note(SOL,2);
+		Note re = new Note(RE,2);
+		Note la = new Note(LA,2);
+		Note mi = new Note(MI, 2);
+		Note si = new Note(SI,2);
+
+		int ecart = -3;//mi.getEcartToReach(do2);
+		for (ecart = -1; ecart < -12; ecart--){
+			System.out.println(ecart);
+			System.out.print("BLOW  ");
+			System.out.print(la.transpose(ecart));
+			System.out.print(" ");
+			System.out.print(re.transpose(ecart));
+			System.out.print(" ");
+			System.out.print(sol.transpose(ecart));
+			System.out.print(" ");
+			System.out.print(do2.transpose(ecart));
+			System.out.print(" ");
+			System.out.print(mi.transpose(ecart));
+			System.out.print(" ");
+			System.out.print(la.transpose(ecart));
+			System.out.print(" ");
+			System.out.print(re.transpose(ecart));
+			System.out.print(" ");
+			System.out.print(sol.transpose(ecart));
+			System.out.print(" ");
+			System.out.print(si.transpose(ecart));
+			System.out.print(" ");
+			System.out.print(fa.transpose(ecart));
+			System.out.print("\n");
+			System.out.print("BLOW  ");
+			System.out.print(si.transpose(ecart));
+			System.out.print(" ");
+			System.out.print(fa.transpose(ecart));
+			System.out.print(" ");
+			System.out.print(la.transpose(ecart));
+			System.out.print(" ");
+			System.out.print(re.transpose(ecart));
+			System.out.print(" ");
+			System.out.print(sol.transpose(ecart));
+			System.out.print(" ");
+			System.out.print(do2.transpose(ecart));
+			System.out.print(" ");
+			System.out.print(mi.transpose(ecart));
+			System.out.print(" ");
+			System.out.print(la.transpose(ecart));
+			System.out.print(" ");
+			System.out.print(re.transpose(ecart));
+			System.out.print(" ");
+			System.out.print(sol.transpose(ecart));
+			System.out.print("\n***************************\n");
+			//		BLOW 	LA 	RE	SOL 	|	DO 	MI 	LA 	RE	|	SOL 	SI 	FA
+			//		DRAW 	SI 	FA 	LA 	|	RE 	SOL 	DO 	MI	|	LA 	RE 	SOL
+		}
+
+
+		//
+
+		//SOL	DO 	FA 	LA 	RE 	SOL 	DO 	FA 	LA 	RE 	SOL	SI
+	}
+
 	//
 	// Main
 	//
 
 	public static void main(String[] args){
-		Note fa2 = new Note(FA, 2);
-		Note do3 = new Note(DO, 3);
-		Note do6 = new Note(DO, 6);
-		Note sol5 = new Note(SOL,5);
-		Note re5 = new Note(RE,5);
-		Note si5 = new Note(SI,5);
-		Note mi6 = new Note(MI, 6);
+		//		Note fa2 = new Note(FA, 2);
+		//		Note do3 = new Note(DO, 3);
+		//		Note do6 = new Note(DO, 6);
+		//		Note sol5 = new Note(SOL,5);
+		//		Note re5 = new Note(RE,5);
+		//		Note si5 = new Note(SI,5);
+		//		Note mi6 = new Note(MI, 6);
+		//		
+		System.out.println("yoooooooooooo");		
+		Note fa = new Note(FA, 2);
+		Note do2 = new Note(DO, 2);
+		Note sol = new Note(SOL,2);
+		Note re = new Note(RE,2);
+		Note la = new Note(LA,2);
+		Note mi = new Note(MI, 2);
+		Note si = new Note(SI,2);
 
-		System.out.println("Ecart "+si5.getEcart(mi6));
-		System.out.println("Ecart "+fa2.getEcart(do3));
-		System.out.println(do3+" is upper "+re5+" ? "+do3.compareTo(re5));
-		System.out.println(re5+" is upper "+do3+" ? "+re5.compareTo(do3));
-		System.out.println(do6+" is upper "+do3+" ? "+do6.compareTo(do3));
-		System.out.println(do3+" is upper "+do3+" ? "+do3.compareTo(do3));
-		System.out.println("First fa after SOL 5 "+sol5.getNext(NoteName.FA));
-		System.out.println("Ecart "+sol5.getEcart(sol5.getNext(NoteName.FA)));
-		System.out.println("First fa befor SOL 5 "+sol5.getPrevious(NoteName.FA));
-		System.out.println("Ecart "+sol5.getEcart(sol5.getPrevious(NoteName.FA)));
-		System.out.println("transpose sol5 to SI5 (4) :  "+sol5.transpose(4));
-		System.out.println("transpose si5 to Sol5 (-4) :  "+si5.transpose(-4));
-		System.out.println("transpose si5 to do4 (-23) :  "+si5.transpose(-23));
-		System.out.println("And back to sol!! :  HEEEINNN? "+sol5.getPrevious(NoteName.FA).transpose(sol5.getEcart(sol5.getPrevious(NoteName.FA))));
+		int ecart;//mi.getEcartToReach(do2);
+		for (ecart = -1; ecart > -12; ecart--){
+			System.out.println(do2.transpose(ecart));
+			System.out.print("BLOW  ");
+			System.out.print(la.transpose(ecart));
+			System.out.print(" ");
+			System.out.print(re.transpose(ecart));
+			System.out.print(" ");
+			System.out.print(sol.transpose(ecart));
+			System.out.print(" ");
+			System.out.print(do2.transpose(ecart));
+			System.out.print(" ");
+			System.out.print(mi.transpose(ecart));
+			System.out.print(" ");
+			System.out.print(la.transpose(ecart));
+			System.out.print(" ");
+			System.out.print(re.transpose(ecart));
+			System.out.print(" ");
+			System.out.print(sol.transpose(ecart));
+			System.out.print(" ");
+			System.out.print(si.transpose(ecart));
+			System.out.print(" ");
+			System.out.print(fa.transpose(ecart));
+			System.out.print("\n");
+			System.out.print("BLOW  ");
+			System.out.print(si.transpose(ecart));
+			System.out.print(" ");
+			System.out.print(fa.transpose(ecart));
+			System.out.print(" ");
+			System.out.print(la.transpose(ecart));
+			System.out.print(" ");
+			System.out.print(re.transpose(ecart));
+			System.out.print(" ");
+			System.out.print(sol.transpose(ecart));
+			System.out.print(" ");
+			System.out.print(do2.transpose(ecart));
+			System.out.print(" ");
+			System.out.print(mi.transpose(ecart));
+			System.out.print(" ");
+			System.out.print(la.transpose(ecart));
+			System.out.print(" ");
+			System.out.print(re.transpose(ecart));
+			System.out.print(" ");
+			System.out.print(sol.transpose(ecart));
+			System.out.print("\n***************************\n");
+			//		BLOW 	LA 	RE	SOL 	|	DO 	MI 	LA 	RE	|	SOL 	SI 	FA
+			//		DRAW 	SI 	FA 	LA 	|	RE 	SOL 	DO 	MI	|	LA 	RE 	SOL
+		}
+
+
+		//		System.out.println("Ecart "+si5.getEcart(mi6));
+		//		System.out.println("Ecart "+fa2.getEcart(do3));
+		//		System.out.println(do3+" is upper "+re5+" ? "+do3.compareTo(re5));
+		//		System.out.println(re5+" is upper "+do3+" ? "+re5.compareTo(do3));
+		//		System.out.println(do6+" is upper "+do3+" ? "+do6.compareTo(do3));
+		//		System.out.println(do3+" is upper "+do3+" ? "+do3.compareTo(do3));
+		//		System.out.println("First fa after SOL 5 "+sol5.getNext(NoteName.FA));
+		//		System.out.println("Ecart "+sol5.getEcart(sol5.getNext(NoteName.FA)));
+		//		System.out.println("First fa befor SOL 5 "+sol5.getPrevious(NoteName.FA));
+		//		System.out.println("Ecart "+sol5.getEcart(sol5.getPrevious(NoteName.FA)));
+		//		System.out.println("transpose sol5 to SI5 (4) :  "+sol5.transpose(4));
+		//		System.out.println("transpose si5 to Sol5 (-4) :  "+si5.transpose(-4));
+		//		System.out.println("transpose si5 to do4 (-23) :  "+si5.transpose(-23));
+		//		System.out.println("And back to sol!! :  HEEEINNN? "+sol5.getPrevious(NoteName.FA).transpose(sol5.getEcart(sol5.getPrevious(NoteName.FA))));
 	}
 
 

@@ -4,7 +4,9 @@ import java.io.*;
 import java.util.regex.*;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import static src.harmonica.Note.NoteName.*;
 
@@ -24,10 +26,10 @@ public class HarmonicaDataBase {
 
 	private void parse(File f) {
 		System.out.println("parsing "+f);
+		String chaine="";
 		try{
 
 			//récupération du fichier dans un string
-			String chaine="";
 			InputStream ips=new FileInputStream(f); 
 			InputStreamReader ipsr=new InputStreamReader(ips);
 			BufferedReader br=new BufferedReader(ipsr);
@@ -36,53 +38,51 @@ public class HarmonicaDataBase {
 				chaine+=ligne+"\n";
 			}
 			br.close(); 
-			//(?:[^B][^L][^O][^W])(?:[^D][^R][^A][^W])
-			//			System.out.println("chaine : "+chaine+"\n###############################");
-			//parsage 
-			Pattern harmonica = Pattern.compile(
-					"NAME(.*)\n(?:.*\n*)*?BLOW(.*)\n(?:.*\n*)*?DRAW(.*)\n", 
-					Pattern.CASE_INSENSITIVE);
-			Matcher m = harmonica.matcher(chaine);
-
-			Pattern parenthesis = Pattern.compile("(([^)]*))");
-
-			//			while(m.find())
-			//				for (int i = 0; i <= m.groupCount(); i++){
-			//					System.out.println("yo : "+i+"\n"+m.group(i));
-			//				}
-
-			//			System.out.println(m.group());
-			//			System.out.println(m.groupCount());
-			//			m.find();
-			//			System.out.println(m.group());
-			//			System.out.println(m.groupCount());
-			//			boolean b = m.matches();
-			//			if (b){
-
-			//			}
-
-			while (m.find()){
-				String name = m.group(1);
-				String[] blow = m.group(2).replaceFirst("[ \t\n\f\r]++", "").split("[ \t\n\f\r]++");
-				String[] draw = m.group(3).replaceFirst("[ \t\n\f\r]++", "").split("[ \t\n\f\r]++");
-
-				try{
-					Harmonica old = harmonicas.put(name, new Harmonica(name, new ReedPlate(blow), new ReedPlate(draw), new Note(DO,3)));	
-					if (old!=null)
-						System.err.println("Already known harmonica for "+m.group(0)+" : "+old);
-					else
-						System.out.println("Added : "+harmonicas.get(name));
-				}catch (Exception e){
-					System.out.println("on file "+f+" : "+m.group(1));
-					e.printStackTrace();
-				}
-			}
-
-
-
-		}		
-		catch (Exception e){
+		}catch (Exception e){
 			e.printStackTrace();
+		}
+		//(?:[^B][^L][^O][^W])(?:[^D][^R][^A][^W])
+		//			System.out.println("chaine : "+chaine+"\n###############################");
+		//parsage 
+		Pattern harmonica = Pattern.compile(
+				"NAME(.*)\n(?:.*\n*)*?BLOW(.*)\n(?:.*\n*)*?DRAW(.*)\n", 
+				Pattern.CASE_INSENSITIVE);
+		Matcher m = harmonica.matcher(chaine);
+
+		Pattern parenthesis = Pattern.compile("(([^)]*))");
+
+		//			while(m.find())
+		//				for (int i = 0; i <= m.groupCount(); i++){
+		//					System.out.println("yo : "+i+"\n"+m.group(i));
+		//				}
+
+		//			System.out.println(m.group());
+		//			System.out.println(m.groupCount());
+		//			m.find();
+		//			System.out.println(m.group());
+		//			System.out.println(m.groupCount());
+		//			boolean b = m.matches();
+		//			if (b){
+
+		//			}
+		Set harp = new HashSet();
+		while (m.find()){
+			String name = m.group(1);
+			String[] blow = m.group(2).replaceFirst("[ \t\n\f\r]++", "").split("[ \t\n\f\r]++");
+			String[] draw = m.group(3).replaceFirst("[ \t\n\f\r]++", "").split("[ \t\n\f\r]++");
+
+			try{
+				Harmonica parsed = 
+						new Harmonica(name, new ReedPlate(blow), new ReedPlate(draw), new Note(DO,3));
+				harmonicas.put(name, parsed);	
+				if (harp.add(parsed))
+					System.out.println("Added : "+harmonicas.get(name));
+				else
+					System.err.println("Already known harmonica for "+m.group(0)+" : "+parsed);
+			}catch (Exception e){
+				System.out.println("on file "+f+" : "+m.group(1));
+				e.printStackTrace();
+			}
 		}
 	}
 
@@ -98,7 +98,7 @@ public class HarmonicaDataBase {
 	}
 
 	public static void main(String[] args){
-		HarmonicaDataBase hdb = new HarmonicaDataBase(new File(getDir()+"/db/harmonicas/"));
+		HarmonicaDataBase hdb = new HarmonicaDataBase(new File(getDir()+"/db/harmonicas/test"));
 
 	}
 

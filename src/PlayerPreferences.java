@@ -18,7 +18,8 @@ public class PlayerPreferences implements Comparator<Collection<? extends Harmon
 
 	public static final String key4notationType_french="french";
 	public static final String key4notationType_international="international";
-	public static String _notationType=key4notationType_international;
+	public static String _notationType=key4notationType_french;
+	public static Boolean _showBemol=true;
 	
 	
 	int iPrefertransposingScore;
