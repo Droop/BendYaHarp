@@ -1,10 +1,11 @@
-package src.harmonica;
+package core.harmonica;
 
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
-import src.harmonica.Note.NoteName;
+import core.harmonica.Note.NoteName;
+
 
 public class Chord extends LinkedList<Note> implements AbstractNote {
 
@@ -26,7 +27,7 @@ public class Chord extends LinkedList<Note> implements AbstractNote {
 	}
 
 	@Override
-	public AbstractNote transpose(int demiTon) throws UnexistantNoteException {
+	public AbstractNote transpose(int demiTon) {
 		// TODO Auto-generated method stub
 		return null;
 	}

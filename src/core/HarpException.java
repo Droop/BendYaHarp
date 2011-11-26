@@ -1,4 +1,4 @@
-package src;
+package core;
 
 public class HarpException extends Exception {
 

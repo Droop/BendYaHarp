@@ -1,4 +1,4 @@
-package src.score;
+package core.score;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -6,13 +6,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import src.DataBasable;
-import src.DataBase;
-import src.Player;
-import src.harmonica.AbstractNote;
-import src.harmonica.Harmonica;
-import src.harmonica.Note;
-import src.harmonica.Harmonica.HarmonicaNote;
+import core.DataBase;
+import core.harmonica.AbstractNote;
+import core.harmonica.Harmonica;
+import core.harmonica.Note;
+import core.harmonica.Player;
+import core.harmonica.Harmonica.HarmonicaNote;
+
 
 public abstract class AbstractScore {
 
@@ -56,11 +56,11 @@ public abstract class AbstractScore {
 		return result;
 	}
 
-	public DataBasable findBestHarp(DataBase hdb, Player p){
+	public Harmonica findBestHarp(DataBase hdb, Player p){
 
 	}
 
-	public static DataBasable findBestHarp(Collection<AbstractScore> scores, DataBase hdb, Player p){
+	public static Harmonica findBestHarp(Collection<AbstractScore> scores, DataBase hdb, Player p){
 
 	}
 	

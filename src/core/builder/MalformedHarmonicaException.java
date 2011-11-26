@@ -1,6 +1,6 @@
-package src.builder;
+package core.builder;
 
-import src.HarpException;
+import core.HarpException;
 
 public class MalformedHarmonicaException extends HarpException {
 

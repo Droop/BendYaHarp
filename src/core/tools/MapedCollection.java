@@ -1,4 +1,4 @@
-package src.tools;
+package core.tools;
 
 import java.util.ArrayList;
 import java.util.Collection;

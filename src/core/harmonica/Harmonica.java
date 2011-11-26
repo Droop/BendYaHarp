@@ -1,4 +1,4 @@
-package src.harmonica;
+package core.harmonica;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -6,41 +6,43 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import com.sun.corba.se.spi.legacy.connection.GetEndPointInfoAgainException;
 
-import static src.harmonica.AirFlow.*;
-import static src.harmonica.BendType.*;
+import core.builder.MalformedHarmonicaException;
+import core.harmonica.Note.NoteName;
+import core.tools.HashedHashList;
+
+import static core.harmonica.AirFlow.*;
+import static core.harmonica.BendType.*;
 
 
-import src.PlayerPreferences;
-import src.builder.MalformedHarmonicaException;
-import src.harmonica.Note.NoteName;
-import src.tools.HashedHashList;
 
 
 
-public class Harmonica{
+public class Harmonica {
 
 	//
 	// Fields
 	//
 
 	private  String tuningName;
-	private Note tonalite;
-	private Hole[] holes;
+	
+	private final Note firstHoleBlow;
+	private final Note firstHoleBlowTonalite;
+	
+	private final Hole[] holes;
 
 	//
 	// Constructors
 	//
 
-	public Harmonica(String tuningName, ReedPlate blowPlate, ReedPlate drawPlate, Note tonalite) throws MalformedHarmonicaException {
+	public Harmonica(String tuningName, ReedPlate blowPlate, ReedPlate drawPlate) throws MalformedHarmonicaException {
 		this.tuningName = tuningName;
-		this.tonalite=tonalite;
-		generateHoles(blowPlate,drawPlate);
-	}	
-
-	private void generateHoles(ReedPlate blowPlate, ReedPlate drawPlate) throws MalformedHarmonicaException {
+//		firstHoleBlow
+//		firstHoleBlowTonalite
 		if (blowPlate.getNumberOfReeds()!=drawPlate.getNumberOfReeds())
 			throw new MalformedHarmonicaException();
 		holes = new Hole[blowPlate.getNumberOfReeds()];
@@ -55,36 +57,31 @@ public class Harmonica{
 	// Accessors
 	//
 
-	public String getTuningName() {
+	public String getName() {
 		return tuningName;
 	}
 
-	protected void setTuningName(String tuningName) {
-		this.tuningName = tuningName;
-	}
+//	public void setHalfValved(){
+//		tuningName = tuningName.replace("halffValved", "").replace("fullValved", "")+"halffValved";
+//		for (int i = 0; i < getNumberOfHoles(); i++){
+//			setValve(i, holes[i].getLowerNoteAirDirection(), true);
+//			setValve(i, holes[i].getUpperNoteAirDirection(), false);
+//		}
+//	}
 
+	public void setFullValved(){
+		tuningName = tuningName.replace("halfValved", "").replace("fullValved", "")+"fullValved";
+		for (Hole h : holes){
+			h.blowValve=true;
+			h.drawValve=true;
+		}
+	}
 	/*
 	 * 
 	 */
 
 	public Boolean isValved(int holeNb, AirFlow air) {
 		return  air.equals(blow)?holes[holeNb].blowValve:holes[holeNb].drawValve;
-	}
-
-	/*
-	 * 
-	 */
-
-	public void setTonalite(Note tonalite) {
-		this.tonalite = tonalite;
-	}
-
-	public void transpose(int demitons){
-		tonalite.transpose(demitons);
-	}	
-
-	public Note getTonalite() {
-		return tonalite;
 	}
 
 	/*
@@ -108,12 +105,12 @@ public class Harmonica{
 	 * 
 	 */
 
-	public Note getNaturalNote(int holeNb, AirFlow air) {
+	public Note getNaturalNote(int holeNb, Note tonalite, AirFlow air) {
 		return air.equals(blow)?holes[holeNb].getBlow():holes[holeNb].getDraw();
 	}
 
-	public Note getNote(int holeNb, AirFlow air, int bendLevel) throws UnexistantNoteException{
-		List<HarmonicaNote<Note>> notes = getNotes(holeNb,air);
+	public Note getNote(int holeNb, Note tonalite, AirFlow air, int bendLevel) throws UnexistantNoteException{
+		List<HarmonicaNote<Note>> notes = getNotes(holeNb,tonalite,air);
 		if (bendLevel>=notes.size())
 			throw new UnexistantNoteException();
 		else
@@ -123,47 +120,51 @@ public class Harmonica{
 	/*
 	 * 
 	 */
+	
+	public Collection<Chord> getChords(Note tonalite, Player capacities){
+		
+	}
 
-	public HashedHashList<Note, HarmonicaNote<Note>> getAllNotes(){
+	public HashedHashList<Note, HarmonicaNote<Note>> getAllNotes(Note tonalite){
 		HashedHashList<Note, HarmonicaNote<Note>> result = new HashedHashList<Note, HarmonicaNote<Note>>();
 		for (int i = 0; i < getNumberOfHoles(); i++){
-			for (HarmonicaNote<Note> hn : getNotes(i))
+			for (HarmonicaNote<Note> hn : getNotes(i,tonalite))
 				result.add(hn.getNote(), hn);
 		}
 		return result;
 	}
 
-	public List<HarmonicaNote<Note>> getNotes(int holeNb){
+	public List<HarmonicaNote<Note>> getNotes(int holeNb, Note tonalite){
 		List<HarmonicaNote<Note>> result = new ArrayList<HarmonicaNote<Note>>();
-		result.addAll(getNotes(holeNb,natural));
-		result.addAll(getNotes(holeNb,bluesbend));
-		result.addAll(getNotes(holeNb,overbend));
-		result.addAll(getNotes(holeNb,valvedbend));
+		result.addAll(getNotes(holeNb,tonalite,natural));
+		result.addAll(getNotes(holeNb,tonalite,bluesbend));
+		result.addAll(getNotes(holeNb,tonalite,overbend));
+		result.addAll(getNotes(holeNb,tonalite,valvedbend));
 		Collections.sort(result);
 		return result;
 	}
 
 
 
-	public List<HarmonicaNote<Note>> getNotes(int holeNb, BendType bendType){
+	public List<HarmonicaNote<Note>> getNotes(int holeNb, Note tonalite, BendType bendType){
 		List<HarmonicaNote<Note>> result = new ArrayList<HarmonicaNote<Note>>();
-		result.addAll(getNotes(holeNb,blow,bendType));
-		result.addAll(getNotes(holeNb,draw,bendType));
+		result.addAll(getNotes(holeNb,tonalite,blow,bendType));
+		result.addAll(getNotes(holeNb,tonalite,draw,bendType));
 		Collections.sort(result);
 		return result;
 	}
 
 
-	public List<HarmonicaNote<Note>> getNotes(int holeNb, AirFlow air){
+	public List<HarmonicaNote<Note>> getNotes(int holeNb, Note tonalite, AirFlow air){
 		List<HarmonicaNote<Note>> result = new ArrayList<HarmonicaNote<Note>>();
 		for (BendType bendT : BendType.values()){
-			result.addAll(getNotes(holeNb, air, bendT));
+			result.addAll(getNotes(holeNb,tonalite, air, bendT));
 		}
 		Collections.sort(result);
 		return result;		
 	}
 
-	public List<HarmonicaNote<Note>> getNotes(int holeNb, AirFlow air, BendType bendType){
+	public List<HarmonicaNote<Note>> getNotes(int holeNb, Note tonalite, AirFlow air, BendType bendType){
 		List<HarmonicaNote<Note>> result = new ArrayList<HarmonicaNote<Note>>();
 
 		switch (bendType) {
@@ -172,13 +173,13 @@ public class Harmonica{
 			new HarmonicaNote<Note>(
 					holeNb, 
 					air, bendType, 0, 
-					getNaturalNote(holeNb,air));
+					getNaturalNote(holeNb, tonalite, air));
 			result.add(hn);
 			break;
 		case bluesbend :
 			if (!(isValved(holeNb,blow) && isValved(holeNb,draw))){
 				if (getHole(holeNb).getUpperNoteAirDirection().equals(air)){
-					List<Note>  bends = getHole(holeNb).getNotesBetween();
+					List<Note>  bends = getHole(holeNb).getNotesBetween(tonalite);
 					int i = 1;
 					for (Note n : bends)
 						result.add(new HarmonicaNote<Note>(
@@ -194,7 +195,7 @@ public class Harmonica{
 					result.add(new HarmonicaNote<Note>(
 							holeNb, 
 							air, bendType, 1,
-							getHole(holeNb).getUpper().transpose(1)));
+							getHole(holeNb).getUpper(tonalite).transpose(1)));
 			break;		
 		case valvedbend :
 			if (isValved(holeNb,getHole(holeNb).getUpperNoteAirDirection()))
@@ -202,18 +203,18 @@ public class Harmonica{
 					result.add(new HarmonicaNote<Note>(
 							holeNb, 
 							air, bendType, 1,
-							getHole(holeNb).getLower().transpose(-1)));
+							getHole(holeNb).getLower(tonalite).transpose(-1)));
 			break;		
 		}
 		Collections.sort(result);
 		return result;
 	}
 
-	public ReedPlate getPlate(AirFlow air){
+	public ReedPlate getPlate(Note tonalite, AirFlow air){
 		Note[] notes = new Note[getNumberOfHoles()];
 		Boolean[] valves = new Boolean[getNumberOfHoles()];
 		for (int i = 0; i < getNumberOfHoles(); i++){
-			notes[i] = getNaturalNote(i,air);
+			notes[i] = getNaturalNote(i,tonalite,air);
 			valves[i] = isValved(i,air);
 		}
 		return new ReedPlate(notes, valves);		
@@ -231,7 +232,7 @@ public class Harmonica{
 	 */
 	public Map<AbstractNote,HarmonicaNote<Note>> match(
 			Collection<AbstractNote> notesToPlay, 
-			final PlayerPreferences optimiser){
+			final Player optimiser){
 		Collection<AbstractNote> notes=new ArrayList<AbstractNote>();
 		HashedHashList<Note, HarmonicaNote<Note>> myNotes = getAllNotes();
 		List<Map<AbstractNote,HarmonicaNote<Note>>> allPossible = new ArrayList<Map<AbstractNote,HarmonicaNote<Note>>>();
@@ -304,10 +305,32 @@ public class Harmonica{
 	// Import/Export
 	//
 
+	/* (non-Javadoc)
+	 * @see src.harmonica.DataBasable#getPattern()
+	 */
+	public static Pattern getPattern(){
+		return Pattern.compile(
+				"NAME(.*)\n(?:.*\n*)*?BLOW(.*)\n(?:.*\n*)*?DRAW(.*)\n", 
+				Pattern.CASE_INSENSITIVE);//.compile("(([^)]*))");;
+	}
+
+	/* (non-Javadoc)
+	 * @see src.harmonica.DataBasable#fromMatcher(java.util.regex.Matcher)
+	 */
+	public static Harmonica fromMatcher(Matcher m){
+		String name = m.group(1);
+		String[] blow = m.group(2).replaceFirst("[ \t\n\f\r]++", "").split("[ \t\n\f\r]++");
+		String[] draw = m.group(3).replaceFirst("[ \t\n\f\r]++", "").split("[ \t\n\f\r]++");
+		return new Harmonica(name, new ReedPlate(blow, new Note(NoteName.DO,3)), new ReedPlate(draw, new Note(NoteName.DO,3)));
+	}
+
 	public String toString(){
 		return "\n Accordage "+tuningName+"\n"+getPlate(blow)+"\n"+getPlate(draw);
 	}
 
+	public String toStringWithBends(PlayerPreferences optimiser){
+		return "\n Accordage "+tuningName+"\n"+getPlate(blow)+"\n"+getPlate(draw);
+	}
 	//
 	// Primitives
 	//
@@ -466,29 +489,30 @@ public class Harmonica{
 		// Accessors
 		//
 
-		public Note getLower(){
+		public Note getLower(int tonalite){
 			if (blow.compareTo(draw)<0){
-				return getBlow();
+				return getBlow(tonalite);
 			} else {
-				return getDraw();
+				return getDraw(tonalite);
+			}
+		}
+		
+		public Note getUpper(Note tonalite){
+			if (blow.compareTo(draw)>0){
+				return getBlow(tonalite);
+			} else {
+				return getDraw(tonalite);
 			}
 		}
 
-		public Note getBlow() {
+		public Note getBlow(Note tonalite) {
 			return Harmonica.this.tonalite.transpose(blowRelative);
 		}
 
-		public Note getDraw() {
+		public Note getDraw(Note tonalite) {
 			return Harmonica.this.tonalite.transpose(drawRelative);
 		}
 
-		public Note getUpper(){
-			if (blow.compareTo(draw)>0){
-				return getBlow();
-			} else {
-				return getDraw();
-			}
-		}
 
 		public AirFlow getLowerNoteAirDirection(){
 			if (blow.compareTo(draw)<0){
@@ -511,17 +535,9 @@ public class Harmonica{
 		//
 
 
-		public List<Note> getNotesBetween(){
-			List<Note> result = new ArrayList<Note>();
-			Note temp = getUpper();
-			while (temp.transpose(-1).compareTo(this.getLower())>0)
-				result.add(temp);
-			Collections.sort(result);
-			return result;
-		}
 
-		public boolean noteIsInInterval(Note n){
-			return n.compareTo(getUpper())<=0 && n.compareTo(getLower())>=0;
+		public boolean noteIsInInterval(Note tonalite, Note n){
+			return n.compareTo(getUpper(tonalite))<=0 && n.compareTo(getLower(tonalite))>=0;
 		}
 
 		public String toString(){
@@ -534,6 +550,22 @@ public class Harmonica{
 
 
 
+
+/*
+ * 
+ */
+//
+//public void setTonalite(Note tonalite) {
+//	this.tonalite = tonalite;
+//}
+//
+//public void transpose(int demitons){
+//	tonalite.transpose(demitons);
+//}	
+//
+//public Note getTonalite() {
+//	return tonalite;
+//}
 
 
 

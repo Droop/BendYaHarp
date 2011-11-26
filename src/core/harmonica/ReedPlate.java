@@ -1,10 +1,11 @@
-package src.harmonica;
+package core.harmonica;
 
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
-import src.harmonica.Note.NoteName;
+import core.harmonica.Note.NoteName;
+
 
 
 
@@ -13,7 +14,7 @@ public class ReedPlate {
 
 	private final Note[] notes;
 	private final Boolean[] valves;
-	private Note tonalite = new UnexistantNoteException();
+	private AbstractNote tonalite = new UnexistantNoteException();
 
 	//
 	//

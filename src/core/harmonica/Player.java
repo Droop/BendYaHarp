@@ -1,15 +1,15 @@
-package src;
+package core.harmonica;
 
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
-import src.harmonica.Harmonica;
-import src.harmonica.Note;
-import src.harmonica.Harmonica.HarmonicaNote;
+import core.harmonica.Harmonica.HarmonicaNote;
 
-public class PlayerPreferences implements Comparator<Collection<? extends HarmonicaNote<?>>>{
+
+
+public class Player implements Comparator<Collection<? extends HarmonicaNote<?>>>{
 
 	//
 	// Fields
@@ -75,7 +75,7 @@ public class PlayerPreferences implements Comparator<Collection<? extends Harmon
 		return iPreferReadOnThreeLines;
 	}
 
-	public void setiPrefertransposingScore(boolean iPrefertransposingScore) {
+	public void setiPrefertransposingScore(int iPrefertransposingScore) {
 		this.iPrefertransposingScore = iPrefertransposingScore;
 	}
 

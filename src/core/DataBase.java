@@ -1,4 +1,4 @@
-package src;
+package core;
 
 import java.io.*;
 import java.util.regex.*;
@@ -8,14 +8,16 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import static src.harmonica.Note.NoteName.*;
+import core.harmonica.Harmonica;
 
 
-public class DataBase<Data extends DataBasable> {
+import static core.harmonica.Note.NoteName.*;
 
-	public final Data sample;
-	Map<String, DataBasable> datas=
-			new HashMap<String, DataBasable>();
+
+public abstract class DataBase<Data> {
+
+	Map<String, Data> datas=
+			new HashMap<String, Data>();
 
 	public DataBase(File f){
 		if (f.isDirectory()){
@@ -45,7 +47,7 @@ public class DataBase<Data extends DataBasable> {
 		//(?:[^B][^L][^O][^W])(?:[^D][^R][^A][^W])
 		//			System.out.println("chaine : "+chaine+"\n###############################");
 		//parsage 
-		Matcher m = sample.getPattern().matcher(chaine);
+		Matcher m = getPattern().matcher(chaine);
 
 		Pattern parenthesis = Pattern.compile("(([^)]*))");
 
@@ -63,11 +65,11 @@ public class DataBase<Data extends DataBasable> {
 		//			if (b){
 
 		//			}
-		Set<DataBasable> knownDatas = new HashSet<DataBasable>();
+		Set<Data> knownDatas = new HashSet<Data>();
 		while (m.find()){
 			try{
-				DataBasable data = sample.fromMatcher(m);
-				datas.put(data.getName(), data);
+				Data data = fromMatcher(m);
+				datas.put(data.toString(), data);
 				if (knownDatas.add(data))
 					System.out.println("Added : "+data);
 				else
@@ -76,7 +78,19 @@ public class DataBase<Data extends DataBasable> {
 				System.out.println("on file "+f+" : "+m.group(1));
 				e.printStackTrace();
 			}
+		}
 	}
+
+
+	//
+
+
+
+	protected abstract Data fromMatcher(Matcher m);
+
+	protected abstract  Pattern getPattern();
+
+	//
 
 
 	private static String getDir() {
@@ -90,7 +104,19 @@ public class DataBase<Data extends DataBasable> {
 	}
 
 	public static void main(String[] args){
-		DataBase hdb = new DataBase(new File(getDir()+"/db/harmonicas/test"));
+		DataBase<Harmonica> hdb = new DataBase<Harmonica>(new File(getDir()+"/db/harmonicas/test")){
+
+			@Override
+			protected Harmonica fromMatcher(Matcher m) {
+				return Harmonica.fromMatcher(m);
+			}
+
+			@Override
+			protected Pattern getPattern() {
+				return Harmonica.getPattern();
+			}
+			
+		};
 
 	}
 

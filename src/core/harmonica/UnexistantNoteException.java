@@ -1,7 +1,7 @@
-package src.harmonica;
+package core.harmonica;
 
-import src.HarpException;
-import src.harmonica.Note.NoteName;
+import core.HarpException;
+import core.harmonica.Note.NoteName;
 
 public class UnexistantNoteException extends HarpException implements AbstractNote {
 
@@ -23,7 +23,7 @@ public class UnexistantNoteException extends HarpException implements AbstractNo
 	}
 
 	@Override
-	public AbstractNote transpose(int demiTon) throws UnexistantNoteException {
+	public AbstractNote transpose(int demiTon) {
 		return null;
 	}
 

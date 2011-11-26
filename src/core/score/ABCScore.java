@@ -1,4 +1,4 @@
-package src.score;
+package core.score;
 
 public class ABCScore extends AbstractScore {
 

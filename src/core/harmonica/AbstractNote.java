@@ -1,6 +1,6 @@
-package src.harmonica;
+package core.harmonica;
 
-import src.harmonica.Note.NoteName;
+import core.harmonica.Note.NoteName;
 
 public interface AbstractNote {
 

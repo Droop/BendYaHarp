@@ -1,4 +1,4 @@
-package src.harmonica;
+package core.harmonica;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -6,8 +6,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 
-import src.PlayerPreferences;
-import static src.harmonica.Note.NoteName.*;
+import static core.harmonica.Note.NoteName.*;
 
 
 public class Note implements AbstractNote, Comparable<AbstractNote>, Comparator<AbstractNote>{
@@ -172,9 +171,9 @@ public class Note implements AbstractNote, Comparable<AbstractNote>, Comparator<
 			this.hasBemol=isBemol;
 		}
 		public String toString(){
-			if (PlayerPreferences._notationType.equals(PlayerPreferences.key4notationType_french)){
+			if (Player._notationType.equals(Player.key4notationType_french)){
 				return this.french;
-			} else if (PlayerPreferences._notationType.equals(PlayerPreferences.key4notationType_international)){
+			} else if (Player._notationType.equals(Player.key4notationType_international)){
 				return this.international;
 			} else
 				throw new RuntimeException("Wrong notation type in static configuration");
@@ -204,58 +203,77 @@ public class Note implements AbstractNote, Comparable<AbstractNote>, Comparator<
 
 
 	public static void myTest(){
-		Note fa = new Note(FA, 2);
-		Note do2 = new Note(DO, 2);
-		Note sol = new Note(SOL,2);
-		Note re = new Note(RE,2);
-		Note la = new Note(LA,2);
-		Note mi = new Note(MI, 2);
-		Note si = new Note(SI,2);
+		Note fa3 = new Note(FA, 3);
+		Note fa6 = new Note(FA, 6);
+		
+		Note do4 = new Note(DO, 4);
+		Note do5 = new Note(DO, 5);
+		
+		Note sol3 = new Note(SOL,3);
+		Note sol4 = new Note(SOL,4);
+		Note sol5 = new Note(SOL,5);
+		Note sol6 = new Note(SOL,6);
+		
+		Note re3 = new Note(RE,3);
+		Note re4 = new Note(RE,4);
+		Note re5 = new Note(RE,5);
+		Note re6 = new Note(RE,6);
+		
+		Note la2 = new Note(LA,2);
+		Note la3 = new Note(LA,3);
+		Note la4 = new Note(LA,4);
+		Note la5 = new Note(LA,5);
+		
+		Note mi4 = new Note(MI, 4);
+		Note mi5 = new Note(MI, 5);
+		
+		Note si2 = new Note(SI,2);
+		Note si5 = new Note(SI,5);
 
-		int ecart = -3;//mi.getEcartToReach(do2);
-		for (ecart = -1; ecart < -12; ecart--){
-			System.out.println(ecart);
+		int ecart = -5;//mi.getEcartToReach(do2);
+		for (ecart = -5; ecart < 36; ecart++){
+			System.out.println(ecart+" : "+new Note(DO,2).transpose(ecart));
 			System.out.print("BLOW  ");
-			System.out.print(la.transpose(ecart));
+			System.out.print(la2.transpose(ecart));
 			System.out.print(" ");
-			System.out.print(re.transpose(ecart));
+			System.out.print(re3.transpose(ecart));
 			System.out.print(" ");
-			System.out.print(sol.transpose(ecart));
+			System.out.print(sol3.transpose(ecart));
 			System.out.print(" ");
-			System.out.print(do2.transpose(ecart));
+			System.out.print(do4.transpose(ecart));
 			System.out.print(" ");
-			System.out.print(mi.transpose(ecart));
+			System.out.print(mi4.transpose(ecart));
 			System.out.print(" ");
-			System.out.print(la.transpose(ecart));
+			System.out.print(la4.transpose(ecart));
 			System.out.print(" ");
-			System.out.print(re.transpose(ecart));
+			System.out.print(re5.transpose(ecart));
 			System.out.print(" ");
-			System.out.print(sol.transpose(ecart));
+			System.out.print(sol5.transpose(ecart));
 			System.out.print(" ");
-			System.out.print(si.transpose(ecart));
+			System.out.print(si5.transpose(ecart));
 			System.out.print(" ");
-			System.out.print(fa.transpose(ecart));
+			System.out.print(fa6.transpose(ecart));
 			System.out.print("\n");
-			System.out.print("BLOW  ");
-			System.out.print(si.transpose(ecart));
+			System.out.print("DRAW  ");
+			System.out.print(si2.transpose(ecart));
 			System.out.print(" ");
-			System.out.print(fa.transpose(ecart));
+			System.out.print(fa3.transpose(ecart));
 			System.out.print(" ");
-			System.out.print(la.transpose(ecart));
+			System.out.print(la3.transpose(ecart));
 			System.out.print(" ");
-			System.out.print(re.transpose(ecart));
+			System.out.print(re4.transpose(ecart));
 			System.out.print(" ");
-			System.out.print(sol.transpose(ecart));
+			System.out.print(sol4.transpose(ecart));
 			System.out.print(" ");
-			System.out.print(do2.transpose(ecart));
+			System.out.print(do5.transpose(ecart));
 			System.out.print(" ");
-			System.out.print(mi.transpose(ecart));
+			System.out.print(mi5.transpose(ecart));
 			System.out.print(" ");
-			System.out.print(la.transpose(ecart));
+			System.out.print(la5.transpose(ecart));
 			System.out.print(" ");
-			System.out.print(re.transpose(ecart));
+			System.out.print(re6.transpose(ecart));
 			System.out.print(" ");
-			System.out.print(sol.transpose(ecart));
+			System.out.print(sol6.transpose(ecart));
 			System.out.print("\n***************************\n");
 			//		BLOW 	LA 	RE	SOL 	|	DO 	MI 	LA 	RE	|	SOL 	SI 	FA
 			//		DRAW 	SI 	FA 	LA 	|	RE 	SOL 	DO 	MI	|	LA 	RE 	SOL
@@ -280,63 +298,8 @@ public class Note implements AbstractNote, Comparable<AbstractNote>, Comparator<
 		//		Note si5 = new Note(SI,5);
 		//		Note mi6 = new Note(MI, 6);
 		//		
-		System.out.println("yoooooooooooo");		
-		Note fa = new Note(FA, 2);
-		Note do2 = new Note(DO, 2);
-		Note sol = new Note(SOL,2);
-		Note re = new Note(RE,2);
-		Note la = new Note(LA,2);
-		Note mi = new Note(MI, 2);
-		Note si = new Note(SI,2);
-
-		int ecart;//mi.getEcartToReach(do2);
-		for (ecart = -1; ecart > -12; ecart--){
-			System.out.println(do2.transpose(ecart));
-			System.out.print("BLOW  ");
-			System.out.print(la.transpose(ecart));
-			System.out.print(" ");
-			System.out.print(re.transpose(ecart));
-			System.out.print(" ");
-			System.out.print(sol.transpose(ecart));
-			System.out.print(" ");
-			System.out.print(do2.transpose(ecart));
-			System.out.print(" ");
-			System.out.print(mi.transpose(ecart));
-			System.out.print(" ");
-			System.out.print(la.transpose(ecart));
-			System.out.print(" ");
-			System.out.print(re.transpose(ecart));
-			System.out.print(" ");
-			System.out.print(sol.transpose(ecart));
-			System.out.print(" ");
-			System.out.print(si.transpose(ecart));
-			System.out.print(" ");
-			System.out.print(fa.transpose(ecart));
-			System.out.print("\n");
-			System.out.print("BLOW  ");
-			System.out.print(si.transpose(ecart));
-			System.out.print(" ");
-			System.out.print(fa.transpose(ecart));
-			System.out.print(" ");
-			System.out.print(la.transpose(ecart));
-			System.out.print(" ");
-			System.out.print(re.transpose(ecart));
-			System.out.print(" ");
-			System.out.print(sol.transpose(ecart));
-			System.out.print(" ");
-			System.out.print(do2.transpose(ecart));
-			System.out.print(" ");
-			System.out.print(mi.transpose(ecart));
-			System.out.print(" ");
-			System.out.print(la.transpose(ecart));
-			System.out.print(" ");
-			System.out.print(re.transpose(ecart));
-			System.out.print(" ");
-			System.out.print(sol.transpose(ecart));
-			System.out.print("\n***************************\n");
-			//		BLOW 	LA 	RE	SOL 	|	DO 	MI 	LA 	RE	|	SOL 	SI 	FA
-			//		DRAW 	SI 	FA 	LA 	|	RE 	SOL 	DO 	MI	|	LA 	RE 	SOL
-		}
+		myTest();
+		
 
 
 		//		System.out.println("Ecart "+si5.getEcart(mi6));

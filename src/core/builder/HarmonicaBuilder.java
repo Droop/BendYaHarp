@@ -1,17 +1,17 @@
-package src.builder;
+package core.builder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import src.DataBasable;
-import src.harmonica.AirFlow;
-import src.harmonica.Note;
-import src.harmonica.ReedPlate;
-import src.harmonica.Harmonica.Hole;
-import src.harmonica.Note.TuningTemperament;
+import core.harmonica.AirFlow;
+import core.harmonica.Harmonica;
+import core.harmonica.Note;
+import core.harmonica.ReedPlate;
+import core.harmonica.Note.TuningTemperament;
 
-import static src.harmonica.AirFlow.*;
-import static src.harmonica.BendType.*;
+
+import static core.harmonica.AirFlow.*;
+import static core.harmonica.BendType.*;
 
 
 public class HarmonicaBuilder {
@@ -20,7 +20,7 @@ public class HarmonicaBuilder {
 	// Fields
 	//
 	
-	DataBasable myHarp;
+	Harmonica myHarp;
 	TuningTemperament temperament = TuningTemperament.EqualTemperament;
 	
 	//
