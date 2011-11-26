@@ -6,10 +6,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import src.PlayerPreferences;
+import src.DataBasable;
+import src.DataBase;
+import src.Player;
 import src.harmonica.AbstractNote;
 import src.harmonica.Harmonica;
-import src.harmonica.HarmonicaDataBase;
 import src.harmonica.Note;
 import src.harmonica.Harmonica.HarmonicaNote;
 
@@ -43,7 +44,7 @@ public abstract class AbstractScore {
 	// Methods
 	//
 
-	public List<HarmonicaLines> generateHarmonicaLines(Harmonica h, PlayerPreferences p){
+	public List<HarmonicaLines> generateHarmonicaLines(Harmonica h, Player p){
 		List<HarmonicaLines> result = new ArrayList<AbstractScore.HarmonicaLines>();
 
 		for (List<AbstractNote> notes : getNotesFrom(score)){
@@ -55,11 +56,11 @@ public abstract class AbstractScore {
 		return result;
 	}
 
-	public Harmonica findBestHarp(HarmonicaDataBase hdb, PlayerPreferences p){
+	public DataBasable findBestHarp(DataBase hdb, Player p){
 
 	}
 
-	public static Harmonica findBestHarp(Collection<AbstractScore> scores, HarmonicaDataBase hdb, PlayerPreferences p){
+	public static DataBasable findBestHarp(Collection<AbstractScore> scores, DataBase hdb, Player p){
 
 	}
 	
@@ -67,7 +68,7 @@ public abstract class AbstractScore {
 	// Primitives
 	//
 
-	private HarmonicaLines graveSurUneLigne(Harmonica h, List<AbstractNote> notes, PlayerPreferences p){
+	private HarmonicaLines graveSurUneLigne(Harmonica h, List<AbstractNote> notes, Player p){
 		Map<AbstractNote,HarmonicaNote<Note>> matching = h.match(notes, p);
 
 		String result ="";
@@ -80,7 +81,7 @@ public abstract class AbstractScore {
 		return new HarmonicaLines(linesForHarp, Harmonica.getScoreTransposition(matching), p.iPreferTransposingScore());
 	}
 
-	private HarmonicaLines graveSurTroisLigne(Harmonica h, List<AbstractNote> notes, PlayerPreferences p){
+	private HarmonicaLines graveSurTroisLigne(Harmonica h, List<AbstractNote> notes, Player p){
 		Map<AbstractNote,HarmonicaNote<Note>> matching = h.match(notes, p);
 
 		String draw ="";

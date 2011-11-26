@@ -3,8 +3,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import src.DataBasable;
 import src.harmonica.AirFlow;
-import src.harmonica.Harmonica;
 import src.harmonica.Note;
 import src.harmonica.ReedPlate;
 import src.harmonica.Harmonica.Hole;
@@ -20,7 +20,7 @@ public class HarmonicaBuilder {
 	// Fields
 	//
 	
-	Harmonica myHarp;
+	DataBasable myHarp;
 	TuningTemperament temperament = TuningTemperament.EqualTemperament;
 	
 	//
@@ -45,7 +45,7 @@ public class HarmonicaBuilder {
 	}
 
 	
-	public int isValid(Harmonica h){
+	public int isValid(DataBasable h){
 		
 	}
 	
@@ -78,11 +78,11 @@ public class HarmonicaBuilder {
 	//
 	
 	
-	public int nbDifferentsReeds(Harmonica n){
+	public int nbDifferentsReeds(DataBasable n){
 		
 	}
 
-	public int maxReedDifference(Harmonica n){
+	public int maxReedDifference(DataBasable n){
 		
 	}
 

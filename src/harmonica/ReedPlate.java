@@ -11,8 +11,9 @@ import src.harmonica.Note.NoteName;
 
 public class ReedPlate {
 
-	private Note[] notes;
-	private Boolean[] valves;
+	private final Note[] notes;
+	private final Boolean[] valves;
+	private Note tonalite = new UnexistantNoteException();
 
 	//
 	//

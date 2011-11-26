@@ -1,4 +1,4 @@
-package src.harmonica;
+package src;
 
 import java.io.*;
 import java.util.regex.*;
@@ -11,12 +11,13 @@ import java.util.Set;
 import static src.harmonica.Note.NoteName.*;
 
 
-public class HarmonicaDataBase {
+public class DataBase<Data extends DataBasable> {
 
-	Map<String, Harmonica> harmonicas=
-			new HashMap<String, Harmonica>();
+	public final Data sample;
+	Map<String, DataBasable> datas=
+			new HashMap<String, DataBasable>();
 
-	public HarmonicaDataBase(File f){
+	public DataBase(File f){
 		if (f.isDirectory()){
 			for (File f2 : f.listFiles())
 				this.parse(f2);
@@ -44,10 +45,7 @@ public class HarmonicaDataBase {
 		//(?:[^B][^L][^O][^W])(?:[^D][^R][^A][^W])
 		//			System.out.println("chaine : "+chaine+"\n###############################");
 		//parsage 
-		Pattern harmonica = Pattern.compile(
-				"NAME(.*)\n(?:.*\n*)*?BLOW(.*)\n(?:.*\n*)*?DRAW(.*)\n", 
-				Pattern.CASE_INSENSITIVE);
-		Matcher m = harmonica.matcher(chaine);
+		Matcher m = sample.getPattern().matcher(chaine);
 
 		Pattern parenthesis = Pattern.compile("(([^)]*))");
 
@@ -65,25 +63,19 @@ public class HarmonicaDataBase {
 		//			if (b){
 
 		//			}
-		Set harp = new HashSet();
+		Set<DataBasable> knownDatas = new HashSet<DataBasable>();
 		while (m.find()){
-			String name = m.group(1);
-			String[] blow = m.group(2).replaceFirst("[ \t\n\f\r]++", "").split("[ \t\n\f\r]++");
-			String[] draw = m.group(3).replaceFirst("[ \t\n\f\r]++", "").split("[ \t\n\f\r]++");
-
 			try{
-				Harmonica parsed = 
-						new Harmonica(name, new ReedPlate(blow), new ReedPlate(draw), new Note(DO,3));
-				harmonicas.put(name, parsed);	
-				if (harp.add(parsed))
-					System.out.println("Added : "+harmonicas.get(name));
+				DataBasable data = sample.fromMatcher(m);
+				datas.put(data.getName(), data);
+				if (knownDatas.add(data))
+					System.out.println("Added : "+data);
 				else
-					System.err.println("Already known harmonica for "+m.group(0)+" : "+parsed);
+					System.err.println("Already known data for "+m.group(0)+" : "+data);
 			}catch (Exception e){
 				System.out.println("on file "+f+" : "+m.group(1));
 				e.printStackTrace();
 			}
-		}
 	}
 
 
@@ -98,7 +90,7 @@ public class HarmonicaDataBase {
 	}
 
 	public static void main(String[] args){
-		HarmonicaDataBase hdb = new HarmonicaDataBase(new File(getDir()+"/db/harmonicas/test"));
+		DataBase hdb = new DataBase(new File(getDir()+"/db/harmonicas/test"));
 
 	}
 

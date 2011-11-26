@@ -8,5 +8,5 @@ public interface AbstractNote {
 
 	public abstract Integer getHauteur();
 
-	public AbstractNote transpose(int demiTon) throws UnexistantNoteException;
+	public AbstractNote transpose(int demiTon);
 }
