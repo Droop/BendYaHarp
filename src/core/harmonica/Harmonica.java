@@ -11,7 +11,9 @@ import java.util.regex.Pattern;
 
 import com.sun.corba.se.spi.legacy.connection.GetEndPointInfoAgainException;
 
-import core.builder.MalformedHarmonicaException;
+import core.MalformedHarmonicaException;
+import core.Player;
+import core.UnexistantNoteException;
 import core.harmonica.Note.NoteName;
 import core.tools.HashedHashList;
 
@@ -29,10 +31,10 @@ public class Harmonica {
 	//
 
 	private  String tuningName;
-	
+
 	private final Note firstHoleBlow;
 	private final Note firstHoleBlowTonalite;
-	
+
 	private final Hole[] holes;
 
 	//
@@ -41,8 +43,12 @@ public class Harmonica {
 
 	public Harmonica(String tuningName, ReedPlate blowPlate, ReedPlate drawPlate) throws MalformedHarmonicaException {
 		this.tuningName = tuningName;
-//		firstHoleBlow
-//		firstHoleBlowTonalite
+		firstHoleBlow=blowPlate.getReed(0);
+
+		if (!blowPlate.getTonality().equals(drawPlate.getTonality()))
+			throw new MalformedHarmonicaException();
+		else
+			firstHoleBlowTonalite = blowPlate.getTonality();
 		if (blowPlate.getNumberOfReeds()!=drawPlate.getNumberOfReeds())
 			throw new MalformedHarmonicaException();
 		holes = new Hole[blowPlate.getNumberOfReeds()];
@@ -61,13 +67,13 @@ public class Harmonica {
 		return tuningName;
 	}
 
-//	public void setHalfValved(){
-//		tuningName = tuningName.replace("halffValved", "").replace("fullValved", "")+"halffValved";
-//		for (int i = 0; i < getNumberOfHoles(); i++){
-//			setValve(i, holes[i].getLowerNoteAirDirection(), true);
-//			setValve(i, holes[i].getUpperNoteAirDirection(), false);
-//		}
-//	}
+	//	public void setHalfValved(){
+	//		tuningName = tuningName.replace("halffValved", "").replace("fullValved", "")+"halffValved";
+	//		for (int i = 0; i < getNumberOfHoles(); i++){
+	//			setValve(i, holes[i].getLowerNoteAirDirection(), true);
+	//			setValve(i, holes[i].getUpperNoteAirDirection(), false);
+	//		}
+	//	}
 
 	public void setFullValved(){
 		tuningName = tuningName.replace("halfValved", "").replace("fullValved", "")+"fullValved";
@@ -106,7 +112,7 @@ public class Harmonica {
 	 */
 
 	public Note getNaturalNote(int holeNb, Note tonalite, AirFlow air) {
-		return air.equals(blow)?holes[holeNb].getBlow():holes[holeNb].getDraw();
+		return air.equals(blow)?holes[holeNb].getBlow(tonalite):holes[holeNb].getDraw(tonalite);
 	}
 
 	public Note getNote(int holeNb, Note tonalite, AirFlow air, int bendLevel) throws UnexistantNoteException{
@@ -120,9 +126,9 @@ public class Harmonica {
 	/*
 	 * 
 	 */
-	
+
 	public Collection<Chord> getChords(Note tonalite, Player capacities){
-		
+
 	}
 
 	public HashedHashList<Note, HarmonicaNote<Note>> getAllNotes(Note tonalite){
@@ -328,7 +334,7 @@ public class Harmonica {
 		return "\n Accordage "+tuningName+"\n"+getPlate(blow)+"\n"+getPlate(draw);
 	}
 
-	public String toStringWithBends(PlayerPreferences optimiser){
+	public String toStringWithBends(Player optimiser){
 		return "\n Accordage "+tuningName+"\n"+getPlate(blow)+"\n"+getPlate(draw);
 	}
 	//
@@ -480,6 +486,11 @@ public class Harmonica {
 			this.drawRelative = Harmonica.this.tonalite.getEcartToReach(draw);
 		}
 
+		public List<Note> getNotesBetween(Note tonalite) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
 		public Hole(int blow, int draw) {
 			this.blowRelative = blow;
 			this.drawRelative = draw;
@@ -489,14 +500,14 @@ public class Harmonica {
 		// Accessors
 		//
 
-		public Note getLower(int tonalite){
+		public Note getLower(Note tonalite){
 			if (blow.compareTo(draw)<0){
 				return getBlow(tonalite);
 			} else {
 				return getDraw(tonalite);
 			}
 		}
-		
+
 		public Note getUpper(Note tonalite){
 			if (blow.compareTo(draw)>0){
 				return getBlow(tonalite);

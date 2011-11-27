@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
+import core.UnexistantNoteException;
 import core.harmonica.Note.NoteName;
 
 
@@ -14,7 +15,7 @@ public class ReedPlate {
 
 	private final Note[] notes;
 	private final Boolean[] valves;
-	private AbstractNote tonalite = new UnexistantNoteException();
+	private Note tonalite =new UnexistantNoteException().getNote();
 
 	//
 	//
@@ -86,5 +87,10 @@ public class ReedPlate {
 
 	public String toString(){
 		return Arrays.asList(notes).toString();
+	}
+
+
+	public Note getTonality() {
+		return tonalite;
 	}
 }

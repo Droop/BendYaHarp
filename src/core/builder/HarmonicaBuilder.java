@@ -3,6 +3,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import core.MalformedHarmonicaException;
 import core.harmonica.AirFlow;
 import core.harmonica.Harmonica;
 import core.harmonica.Note;

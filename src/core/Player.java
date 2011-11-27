@@ -1,10 +1,12 @@
-package core.harmonica;
+package core;
 
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
+import core.harmonica.Harmonica;
+import core.harmonica.Note;
 import core.harmonica.Harmonica.HarmonicaNote;
 
 

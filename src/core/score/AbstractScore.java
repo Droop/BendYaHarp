@@ -7,10 +7,10 @@ import java.util.List;
 import java.util.Map;
 
 import core.DataBase;
+import core.Player;
 import core.harmonica.AbstractNote;
 import core.harmonica.Harmonica;
 import core.harmonica.Note;
-import core.harmonica.Player;
 import core.harmonica.Harmonica.HarmonicaNote;
 
 

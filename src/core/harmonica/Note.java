@@ -6,10 +6,68 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 
+import core.Player;
+import core.UnexistantNoteException;
+
 import static core.harmonica.Note.NoteName.*;
 
 
 public class Note implements AbstractNote, Comparable<AbstractNote>, Comparator<AbstractNote>{
+
+	//
+	// Subclass
+	//
+
+	public enum NoteName {
+		DO("DO", "C"), DOd("DO#", "C#"), RE("RE", "D", true), REd("RE#", "D#"), 
+		MI("MI", "E", true), FA("FA", "F"), FAd("FA#", "F#"), SOL("SOL", "G", true), SOLd("SOL#", "G#"), 
+		LA("LA", "A", true), LAd("LA#", "A#"), SI("SI", "B", true);
+
+		String french;
+		String international;
+		boolean hasBemol;
+
+		private NoteName(String french, String international) {
+			this.french=french;
+			this.international = international;
+			this.hasBemol=false;
+		}
+
+		private NoteName(String french, String international, boolean isBemol) {
+			this.french=french;
+			this.international = international;
+			this.hasBemol=isBemol;
+		}
+		public String toString(){
+			if (Player._notationType.equals(Player.key4notationType_french)){
+				return this.french;
+			} else if (Player._notationType.equals(Player.key4notationType_international)){
+				return this.international;
+			} else
+				throw new RuntimeException("Wrong notation type in static configuration");
+
+		}
+
+		public NoteName transpose(int demitons) {
+			return new Note(this,3).transpose(demitons).getNoteName();
+		}
+
+		public static NoteName fromString(String s) throws UnexistantNoteException{
+			for (NoteName n : NoteName.values()){
+				if (s.toUpperCase().equals(n.french) || s.toUpperCase().equals(n.international))
+					return n;
+				else if(n.hasBemol &&(
+						s.toUpperCase().equals(n.french+"B")
+						|| s.toUpperCase().equals(n.international+"B")))
+					return NoteName.values()[n.ordinal()-1];
+			}
+			throw new UnexistantNoteException(s);
+		}
+	}
+
+	public enum TuningTemperament {
+		EqualTemperament, JustIntonation, Compromised;
+	}
 
 	//
 	// Fields
@@ -146,61 +204,9 @@ public class Note implements AbstractNote, Comparable<AbstractNote>, Comparator<
 			return false;
 	}
 
-	//
-	// Subclass
-	//
-
-	public enum NoteName {
-		DO("DO", "C"), DOd("DO#", "C#"), RE("RE", "D", true), REd("RE#", "D#"), 
-		MI("MI", "E", true), FA("FA", "F"), FAd("FA#", "F#"), SOL("SOL", "G", true), SOLd("SOL#", "G#"), 
-		LA("LA", "A", true), LAd("LA#", "A#"), SI("SI", "B", true);
-
-		String french;
-		String international;
-		boolean hasBemol;
-
-		private NoteName(String french, String international) {
-			this.french=french;
-			this.international = international;
-			this.hasBemol=false;
-		}
-
-		private NoteName(String french, String international, boolean isBemol) {
-			this.french=french;
-			this.international = international;
-			this.hasBemol=isBemol;
-		}
-		public String toString(){
-			if (Player._notationType.equals(Player.key4notationType_french)){
-				return this.french;
-			} else if (Player._notationType.equals(Player.key4notationType_international)){
-				return this.international;
-			} else
-				throw new RuntimeException("Wrong notation type in static configuration");
-
-		}
-
-		public NoteName transpose(int demitons) {
-			return new Note(this,3).transpose(demitons).getNoteName();
-		}
-
-		public static NoteName fromString(String s) throws UnexistantNoteException{
-			for (NoteName n : NoteName.values()){
-				if (s.toUpperCase().equals(n.french) || s.toUpperCase().equals(n.international))
-					return n;
-				else if(n.hasBemol &&(
-						s.toUpperCase().equals(n.french+"B")
-						|| s.toUpperCase().equals(n.international+"B")))
-					return NoteName.values()[n.ordinal()-1];
-			}
-			throw new UnexistantNoteException(s);
-		}
-	}
-
-	public enum TuningTemperament {
-		EqualTemperament, JustIntonation, Compromised;
-	}
-
+	/*
+	 * 
+	 */
 
 	public static void myTest(){
 		Note fa3 = new Note(FA, 3);
