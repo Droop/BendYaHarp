@@ -15,6 +15,12 @@ public class Chord extends LinkedList<Note> implements AbstractNote {
 	}
 
 	@Override
+	public Note getNote() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
 	public NoteName getNoteName() {
 		// TODO Auto-generated method stub
 		return null;
@@ -31,5 +37,4 @@ public class Chord extends LinkedList<Note> implements AbstractNote {
 		// TODO Auto-generated method stub
 		return null;
 	}
-
 }
