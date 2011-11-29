@@ -19,6 +19,7 @@ import core.tools.HashedHashList;
 
 import static core.harmonica.AirFlow.*;
 import static core.harmonica.BendType.*;
+import static core.harmonica.Note.NoteName.*;
 
 
 
@@ -30,7 +31,7 @@ public class Harmonica {
 	// Fields
 	//
 
-	private  String tuningName;
+	private final  String tuningName;
 
 	private final Note firstHoleBlow;
 	private final Note firstHoleBlowTonalite;
@@ -41,14 +42,12 @@ public class Harmonica {
 	// Constructors
 	//
 
-	public Harmonica(String tuningName, ReedPlate blowPlate, ReedPlate drawPlate) throws MalformedHarmonicaException {
+	public Harmonica(String tuningName, ReedPlate blowPlate, ReedPlate drawPlate, Note platesTonality) throws MalformedHarmonicaException {
 		this.tuningName = tuningName;
-		firstHoleBlow=blowPlate.getReed(0);
 
-		if (!blowPlate.getTonality().equals(drawPlate.getTonality()))
-			throw new MalformedHarmonicaException();
-		else
-			firstHoleBlowTonalite = blowPlate.getTonality();
+		firstHoleBlow=blowPlate.getReed(0);
+		firstHoleBlowTonalite = platesTonality;
+
 		if (blowPlate.getNumberOfReeds()!=drawPlate.getNumberOfReeds())
 			throw new MalformedHarmonicaException();
 		holes = new Hole[blowPlate.getNumberOfReeds()];
@@ -67,21 +66,23 @@ public class Harmonica {
 		return tuningName;
 	}
 
-	//	public void setHalfValved(){
-	//		tuningName = tuningName.replace("halffValved", "").replace("fullValved", "")+"halffValved";
+	//	public Harmonica getHalfValved(){
+	//		String tuningName=tuningName.replace("halffValved", "").replace("fullValved", "")+"halffValved"; 
+	//		ReedPlate blowPlate = getPlate(new Note(DO,3),blow);
+	//		ReedPlate drawPlate = getPlate(new Note(DO,3),draw);
 	//		for (int i = 0; i < getNumberOfHoles(); i++){
 	//			setValve(i, holes[i].getLowerNoteAirDirection(), true);
 	//			setValve(i, holes[i].getUpperNoteAirDirection(), false);
 	//		}
 	//	}
-
-	public void setFullValved(){
-		tuningName = tuningName.replace("halfValved", "").replace("fullValved", "")+"fullValved";
-		for (Hole h : holes){
-			h.blowValve=true;
-			h.drawValve=true;
-		}
-	}
+	//
+	//	public Harmonica getFullValved(){
+	//		tuningName = tuningName.replace("halfValved", "").replace("fullValved", "")+"fullValved";
+	//		for (Hole h : holes){
+	//			h.blowValve=true;
+	//			h.drawValve=true;
+	//		}
+	//	}
 	/*
 	 * 
 	 */
@@ -323,39 +324,32 @@ public class Harmonica {
 	/* (non-Javadoc)
 	 * @see src.harmonica.DataBasable#fromMatcher(java.util.regex.Matcher)
 	 */
-	public static Harmonica fromMatcher(Matcher m){
+	public static Harmonica fromMatcher(Matcher m) throws MalformedHarmonicaException, UnexistantNoteException{
 		String name = m.group(1);
 		String[] blow = m.group(2).replaceFirst("[ \t\n\f\r]++", "").split("[ \t\n\f\r]++");
 		String[] draw = m.group(3).replaceFirst("[ \t\n\f\r]++", "").split("[ \t\n\f\r]++");
-		return new Harmonica(name, new ReedPlate(blow, new Note(NoteName.DO,3)), new ReedPlate(draw, new Note(NoteName.DO,3)));
+		return new Harmonica(name, new ReedPlate(blow), new ReedPlate(draw), Note.do3);
 	}
 
 	public String toString(){
-		return "\n Accordage "+tuningName+"\n"+getPlate(blow)+"\n"+getPlate(draw);
+		return "\n Accordage "+tuningName+" (en DO) :\n"+getPlate(Note.do3, blow)+"\n"+getPlate(Note.do3, draw);
 	}
 
-	public String toStringWithBends(Player optimiser){
-		return "\n Accordage "+tuningName+"\n"+getPlate(blow)+"\n"+getPlate(draw);
-	}
+	//	public String toStringWithBends(Player optimiser){
+	//		return "\n Accordage "+tuningName+"\n"+getPlate(blow)+"\n"+getPlate(draw);
+	//	}
 	//
 	// Primitives
 	//
 
-	private Note getLowerNote() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-
-	private Note getUpperNote() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 	public int hashCode(){
-		return 0;
+		int c = 3;
+		for (int i = 0; i < getNumberOfHoles(); i++)
+			c+= getHole(i).hashCode()*Math.pow(7, i);
+		return c;
 	}
 
+	
 	public boolean equals(Object o){
 		if (o instanceof Harmonica){
 			Harmonica that = (Harmonica) o;
@@ -363,16 +357,9 @@ public class Harmonica {
 			if (that.getNumberOfHoles()!=this.getNumberOfHoles())
 				return false;
 			else {
-				System.out.println(this.tuningName+" 1 "+this.tonalite+" "+this.getNaturalNote(0, blow)+" "+Note.do3.getEcartToReach(this.getNaturalNote(0, blow)));
-				that.transpose(Note.do3.getEcartToReach(that.getNaturalNote(0, blow)));
-				assert(that.getNaturalNote(0, blow).equals(Note.do3));
-				this.transpose(Note.do3.getEcartToReach(this.getNaturalNote(0, blow)));
-				System.out.println(this.tuningName+" 2 "+this.tonalite+" "+this.getNaturalNote(0, blow)+" "+Note.do3.getEcartToReach(this.getNaturalNote(0, blow)));
-				assert(this.getNaturalNote(0, blow).equals(Note.do3));
 				for (int i = 0; i < this.getNumberOfHoles(); i++)
-					if (!this.getNaturalNote(i, blow).equals(that.getNaturalNote(i, blow))
-							|| !this.getNaturalNote(i, blow).equals(that.getNaturalNote(i, draw)))
-						return false;				
+					if (!this.getHole(i).equals(that.getHole(i)))
+						return false;
 			}
 			return true;
 		}else
@@ -454,8 +441,7 @@ public class Harmonica {
 		}
 
 		@Override
-		public AbstractNote transpose(int demiTon)
-				throws UnexistantNoteException {
+		public AbstractNote transpose(int demiTon) {
 			AbstractNote n = getNote().transpose(demiTon);
 			return optimiser.getPrefered(getAllNotes().get(n));
 		}
@@ -470,10 +456,10 @@ public class Harmonica {
 		// Fields
 		//
 
-		public final int blowRelative;
-		public final int drawRelative;
+		public final int blowRelative; //the number of demiton from the first hole blow to this hole blow
+		public final int drawRelative; //the number of demiton from the first hole blow to this hole draw
 
-		public Boolean blowValve;
+		public Boolean blowValve; 
 		public Boolean drawValve;
 
 
@@ -482,19 +468,10 @@ public class Harmonica {
 		//
 
 		public Hole(Note blow, Note draw) {
-			this.blowRelative = Harmonica.this.tonalite.getEcartToReach(blow);
-			this.drawRelative = Harmonica.this.tonalite.getEcartToReach(draw);
+			this.blowRelative = firstHoleBlow.getEcartToReach(blow);
+			this.drawRelative = firstHoleBlow.getEcartToReach(draw);
 		}
 
-		public List<Note> getNotesBetween(Note tonalite) {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		public Hole(int blow, int draw) {
-			this.blowRelative = blow;
-			this.drawRelative = draw;
-		}
 
 		//
 		// Accessors
@@ -517,11 +494,13 @@ public class Harmonica {
 		}
 
 		public Note getBlow(Note tonalite) {
-			return Harmonica.this.tonalite.transpose(blowRelative);
+			Note blowNote =  firstHoleBlow.transpose(blowRelative);//the note in firstHoleBlowTonalite
+			return blowNote.transpose(firstHoleBlowTonalite.getEcartToReach(tonalite));
 		}
 
 		public Note getDraw(Note tonalite) {
-			return Harmonica.this.tonalite.transpose(drawRelative);
+			Note drawNote =  firstHoleBlow.transpose(drawRelative);//the note in firstHoleBlowTonalite
+			return drawNote.transpose(firstHoleBlowTonalite.getEcartToReach(tonalite));
 		}
 
 
@@ -541,6 +520,9 @@ public class Harmonica {
 			}
 		}
 
+		public List<Note> getNotesBetween(Note tonalite) {
+			return Note.getNotesBetween(getBlow(tonalite), getDraw(tonalite));
+		}
 		//
 		// Methods
 		//
@@ -551,6 +533,19 @@ public class Harmonica {
 			return n.compareTo(getUpper(tonalite))<=0 && n.compareTo(getLower(tonalite))>=0;
 		}
 
+		public boolean equals(Object o){
+			if (o instanceof Hole){
+				Hole that = (Hole) o;
+				return this.blowRelative==that.blowRelative && this.blowValve==that.blowValve 
+						&& this.drawRelative==that.drawRelative && this.drawValve==that.drawValve;
+			} else
+				return false;
+		}
+		
+		public int hashCode(){
+			return (blowValve?1:0)+   (drawValve?1:0) * 2 +blowRelative * 10 + drawRelative * 100; 
+		}
+		
 		public String toString(){
 			return "|"+blow+"+ , "+draw+"- |" ;
 		}
@@ -560,6 +555,41 @@ public class Harmonica {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+//	public boolean equals(Object o){
+//		if (o instanceof Harmonica){
+//			Harmonica that = (Harmonica) o;
+//
+//			if (that.getNumberOfHoles()!=this.getNumberOfHoles())
+//				return false;
+//			else {
+//				System.out.println(this.tuningName+" 1 "+this.tonalite+" "+this.getNaturalNote(0, blow)+" "+Note.do3.getEcartToReach(this.getNaturalNote(0, blow)));
+//				that.transpose(Note.do3.getEcartToReach(that.getNaturalNote(0, blow)));
+//				assert(that.getNaturalNote(0, blow).equals(Note.do3));
+//				this.transpose(Note.do3.getEcartToReach(this.getNaturalNote(0, blow)));
+//				System.out.println(this.tuningName+" 2 "+this.tonalite+" "+this.getNaturalNote(0, blow)+" "+Note.do3.getEcartToReach(this.getNaturalNote(0, blow)));
+//				assert(this.getNaturalNote(0, blow).equals(Note.do3));
+//				for (int i = 0; i < this.getNumberOfHoles(); i++)
+//					if (!this.getNaturalNote(i, blow).equals(that.getNaturalNote(i, blow))
+//							|| !this.getNaturalNote(i, blow).equals(that.getNaturalNote(i, draw)))
+//						return false;				
+//			}
+//			return true;
+//		}else
+//			return false;
+//	}
 
 
 /*

@@ -86,7 +86,7 @@ public abstract class DataBase<Data> {
 
 
 
-	protected abstract Data fromMatcher(Matcher m);
+	protected abstract Data fromMatcher(Matcher m) throws HarpException;
 
 	protected abstract  Pattern getPattern();
 
@@ -104,10 +104,10 @@ public abstract class DataBase<Data> {
 	}
 
 	public static void main(String[] args){
-		DataBase<Harmonica> hdb = new DataBase<Harmonica>(new File(getDir()+"/db/harmonicas/test")){
+		DataBase<Harmonica> hdb = new DataBase<Harmonica>(new File(getDir()+"/db/harmonicas/")){
 
 			@Override
-			protected Harmonica fromMatcher(Matcher m) {
+			protected Harmonica fromMatcher(Matcher m) throws MalformedHarmonicaException, UnexistantNoteException {
 				return Harmonica.fromMatcher(m);
 			}
 

@@ -130,7 +130,8 @@ public class Player implements Comparator<Collection<? extends HarmonicaNote<?>>
 	}
 	
 	@Override
-	public int compare(Collection<? extends HarmonicaNote<?>> o1,
+	public int compare(
+			Collection<? extends HarmonicaNote<?>> o1,
 			Collection<? extends HarmonicaNote<?>> o2) {
 		// TODO Auto-generated method stub
 		return 0;
