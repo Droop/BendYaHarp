@@ -15,7 +15,6 @@ public class ReedPlate {
 
 	private final Note[] notes;
 	private final Boolean[] valves;
-	private Note tonalite =new UnexistantNoteException().getNote();
 
 	//
 	//
@@ -87,10 +86,5 @@ public class ReedPlate {
 
 	public String toString(){
 		return Arrays.asList(notes).toString();
-	}
-
-
-	public Note getTonality() {
-		return tonalite;
 	}
 }

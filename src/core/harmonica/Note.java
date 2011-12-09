@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
 
 import core.Player;
 import core.UnexistantNoteException;
@@ -153,6 +154,10 @@ public class Note implements AbstractNote, Comparable<AbstractNote>, Comparator<
 			result.add(n.transpose(demiTon));
 		}
 		return result;
+	}
+
+	public static List<Note> getNotesBetween(Note blow, Note draw) {
+		// TODO Auto-generated method stub
 	}
 
 	public int getEcartToReach(Note that){
