@@ -1,7 +1,6 @@
 package core;
 
 import harmonica.Harmonica;
-import harmonica.Note;
 import harmonica.Harmonica.HarmonicaNote;
 
 import java.util.ArrayList;
@@ -9,6 +8,8 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+
+import music.Note;
 
 
 

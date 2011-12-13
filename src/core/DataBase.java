@@ -2,7 +2,6 @@ package core;
 
 import harmonica.Harmonica;
 import harmonica.MalformedHarmonicaException;
-import harmonica.UnexistantNoteException;
 
 import java.io.*;
 import java.util.regex.*;
@@ -12,9 +11,11 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import music.UnexistantNoteException;
 
 
-import static harmonica.Note.NoteName.*;
+
+import static music.Note.NoteName.*;
 
 
 public abstract class DataBase<Data> {
